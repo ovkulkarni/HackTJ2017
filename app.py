@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask, render_template
+from flask import Flask, render_template, g, redirect, url_for
 import settings
 
 from utils import init_blueprints
@@ -13,6 +13,7 @@ app.secret_key = settings.SECRET_KEY
 init_blueprints(app)
 
 @app.route("/")
-@login_required
 def index():
+    if g.user is None:
+        return redirect(url_for("users.login"))
     return render_template("index.html")
