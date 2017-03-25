@@ -4,7 +4,7 @@ import asyncio
 
 async def start():
     trig = RSSTrigger()
-    await trig.init("http://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml")
+    await trig.init("http://lorem-rss.herokuapp.com/feed?unit=second&interval=30")
 
     await trig.call()
 
