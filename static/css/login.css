@@ -24,7 +24,12 @@ body {
     border-radius: 30px;
 }
 .main input::placeholder {
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.4);
+}
+
+.main input:focus {
+    background-color: rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.8);
 }
 
 .main h2 {
