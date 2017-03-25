@@ -13,7 +13,7 @@
 
 {% block content %}
 <div id="particles-js"></div>
-<div id="login" class="box clearfix">
+<div id="login" class="box clearfix main">
     <form method="POST">
         <h2>Automate</h2>
         <div class="form-group">
@@ -27,7 +27,7 @@
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
-        <a href="{{ url_for('users.register') }}" id="register">Don't have an account? Click here!</a>
+        <a href="{{ url_for('users.register') }}" id="footer-text">Don't have an account? Click here!</a>
     </form>
 </div>
 <div class="footer"></div>
