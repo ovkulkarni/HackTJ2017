@@ -4,7 +4,7 @@ from .models import User
 
 blueprint = Blueprint("users", __name__, url_prefix="/user")
 
-@blueprint.route("/login/")
+@blueprint.route("/login/", methods=["GET", "POST"])
 def login():
     # if g.user:
     #     return redirect("index")
@@ -25,7 +25,7 @@ def login():
     else:
         return render_template("login.html")
 
-@blueprint.route("/register/")
+@blueprint.route("/register/", methods=["GET", "POST"])
 def register():
     # if g.user:
     #     return redirect("index")
