@@ -44,12 +44,12 @@ def register():
         try:
             u = User.get(User.email == email)
             flash("An account with this email already exists!", "error")
-            return redirect(url_for(".register"))
+            return redirect(url_for(".login"))
         except User.DoesNotExist:
             pass
         u = User.create(name=name, email=email, password=password)
         flash("Your account has been created!", "success")
         g.user = u
-        return redirect(url_for("index"))
+        return redirect(url_for(".login"))
     else:
         return render_template("register.html")
