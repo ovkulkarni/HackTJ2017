@@ -8,7 +8,6 @@
 {% block js %}
     {{ super() }}
     <script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.0.1/particles.min.js" integrity="sha256-874BM9UxXrs6JMlCsfvzkGdFMdOX//vrjprH4M4/Bo8=" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 {% endblock %}
 
@@ -18,10 +17,10 @@
     <form method="POST">
         <h2>Login</h2>
         <div class="form-group">
-            <label for="id_username">E-mail</label>
+            <label for="id_username">Email</label>
             <div class="input-group">
                 <div class="input-group-addon"><i class="fa fa-fw fa-envelope"></i></div>
-                <input id="id_username" name="username" type="email" class="form-control" placeholder="E-mail" />
+                <input id="id_username" name="username" type="email" class="form-control" placeholder="Email" />
             </div>
         </div>
         <div class="form-group">
