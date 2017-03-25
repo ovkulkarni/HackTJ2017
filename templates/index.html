@@ -1,48 +1,37 @@
-<!doctype html>
-<html>
-    <head>
-        <title>Automate</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/css/tether.css" integrity="sha256-XlckdtWgpo4xmVoJR0BgtatbV/UpLTiOE+UBfRGFutg=" crossorigin="anonymous" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha256-rr9hHBQ43H7HSOmmNkxzQGazS/Khx+L8ZRHteEY1tQ4=" crossorigin="anonymous" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.js" integrity="sha256-jVfFb7AbGi7S/SLNl8SB4/MYaf549eEs+NlIWMoARHg=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha256-+kIbbrvS+0dNOjhmQJzmwe/RILR/8lb/+4+PUNVW09k=" crossorigin="anonymous"></script>
-        <style>
-        #login {
-            max-width: 500px;
-            margin: 15px auto;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        </style>
-    </head>
-    <body>
-        <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-            <a class="navbar-brand" href="#"><i class="fa fa-cog"></i> Automate</a>
-        </nav>
-        <div id="content">
-            <div id="login" class="clearfix">
-                <form method="POST">
-                    <h2>Login</h2>
-                    <div class="form-group">
-                        <label for="id_username">Username</label>
-                        <div class="input-group">
-                            <div class="input-group-addon"><i class="fa fa-fw fa-user"></i></div>
-                            <input id="id_username" name="username" type="text" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="id_password">Password</label>
-                        <div class="input-group">
-                            <div class="input-group-addon"><i class="fa fa-fw fa-key"></i></div>
-                            <input id="id_password" name="password" type="text" class="form-control" />
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary pull-right">Login</button>
-                </form>
+{% extends "base.html" %}
+
+{% block css %}
+    {{ super() }}
+    <style>
+    #login {
+        max-width: 500px;
+        margin: 15px auto;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div id="login" class="clearfix">
+    <form method="POST">
+        <h2>Login</h2>
+        <div class="form-group">
+            <label for="id_username">Username</label>
+            <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-fw fa-user"></i></div>
+                <input id="id_username" name="username" type="text" class="form-control" />
             </div>
         </div>
-    </body>
-</html>
+        <div class="form-group">
+            <label for="id_password">Password</label>
+            <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-fw fa-key"></i></div>
+                <input id="id_password" name="password" type="text" class="form-control" />
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary pull-right">Login</button>
+    </form>
+</div>
+{% endblock %}
