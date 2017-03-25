@@ -14,7 +14,6 @@ def login():
             u = User.get(User.email == request.form.get("email", ""))
         except User.DoesNotExist:
             error = True
-            return redirect(url_for(".login"))
         if not u.password.check_password(request.form.get("password", "")):
             error = True
         if error:
@@ -22,6 +21,7 @@ def login():
             return redirect(url_for(".login"))
         else:
             g.user = u
+            print(g)
             return redirect(url_for("index"))
     else:
         return render_template("login.html")
@@ -47,8 +47,9 @@ def register():
             return redirect(url_for(".register"))
         except User.DoesNotExist:
             pass
-        User.create(name=name, email=email, password=password)
+        u = User.create(name=name, email=email, password=password)
         flash("Your account has been created!", "success")
+        g.user = u
         return redirect(url_for("index"))
     else:
         return render_template("register.html")
