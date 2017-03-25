@@ -11,8 +11,35 @@ body {
     background-color: #111111;
 }
 
+#login {
+    background-color: transparent;
+    border: 0;
+    padding: 50px;
+    margin-top: 100px;
+}
+
+#login input {
+    background-color:rgba(255,255,255,.15);
+    color: rgba(255,255,255,0.8);
+    margin-top: 15px;
+    border-radius: 30px;
+}
+#login input::placeholder {
+    color: rgba(255,255,255,0.5);
+}
+
+#login h2 {
+    color: rgba(255,255,255,0.8);
+    text-align:center;
+    width: 100%;
+}
+
 #login [type='submit'] {
     display: block;
     width: 200px;
     margin: 0 auto;
+}
+
+a#register {
+    color: #dddddd;
 }
