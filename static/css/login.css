@@ -21,7 +21,6 @@ body {
 #login input {
     background-color:rgba(255,255,255,.15);
     color: rgba(255,255,255,0.8);
-    margin-top: 15px;
     border-radius: 30px;
 }
 #login input::placeholder {
@@ -32,14 +31,21 @@ body {
     color: rgba(255,255,255,0.8);
     text-align:center;
     width: 100%;
+    margin-bottom: 30px;
 }
 
 #login [type='submit'] {
     display: block;
     width: 200px;
     margin: 0 auto;
+    margin-top: 30px;
 }
 
 a#register {
     color: #dddddd;
+    font-size: 10px;
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+    display: block;
 }

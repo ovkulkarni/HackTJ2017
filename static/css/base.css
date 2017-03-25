@@ -13,3 +13,14 @@ html, body {
 .footer {
     text-align: center;
 }
+.btn {
+    border-radius: 50px;
+}
+.btn-primary {
+    border-color: #01349b;
+    background-color: #01349b;
+}
+.btn-primary:hover {
+    border-color: #1060b0;
+    background-color: #0266bb;
+}

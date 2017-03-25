@@ -15,7 +15,7 @@
 <div id="particles-js"></div>
 <div id="login" class="box clearfix">
     <form method="POST">
-        <h2>Whatever this app is called</h2>
+        <h2>Automate</h2>
         <div class="form-group">
             <div class="input-group">
                 <input id="id_username" name="username" type="email" class="form-control" placeholder="E-mail" />
@@ -27,7 +27,8 @@
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
+        <a href="{{ url_for('users.register') }}" id="register">Don't have an account? Click here!</a>
     </form>
 </div>
-<div class="footer"><a href="{{ url_for('users.register') }}" id="register">Don't have an account? Click here!</a></div>
+<div class="footer"></div>
 {% endblock %}
