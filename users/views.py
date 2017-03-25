@@ -12,9 +12,9 @@ def login():
         error = False
         try:
             u = User.get(User.email == request.form.get("email", ""))
+            if not u.password.check_password(request.form.get("password", "")):
+                error = True
         except User.DoesNotExist:
-            error = True
-        if not u.password.check_password(request.form.get("password", "")):
             error = True
         if error:
             flash("Failed login!", "error")
