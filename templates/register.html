@@ -2,21 +2,12 @@
 
 {% block css %}
     {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css')}}">
-{% endblock %}
-
-{% block js %}
-    {{ super() }}
-    <script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.0.1/particles.min.js" integrity="sha256-874BM9UxXrs6JMlCsfvzkGdFMdOX//vrjprH4M4/Bo8=" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 {% endblock %}
 
 {% block content %}
-<div id="particles-js"></div>
-<div id="login" class="box clearfix">
+<div id="register" class="box clearfix">
     <form method="POST">
-        <h2>Login</h2>
+        <h2>Register</h2>
         <div class="form-group">
             <label for="id_username">Username</label>
             <div class="input-group">
@@ -31,8 +22,15 @@
                 <input id="id_password" name="password" type="text" class="form-control" />
             </div>
         </div>
-        <button type="submit" class="btn btn-primary pull-right">Login</button>
+        <div class="form-group">
+            <label for="id_confirm">Confirm Password</label>
+            <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-fw fa-key"></i></div>
+                <input id="id_confirm" name="confirm" type="text" class="form-control" />
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success pull-right">Register</button>
     </form>
 </div>
-<div class="footer"><a href=" url_for('users.register') ">Don't have an account? Click here!</a></div>
+<div class="footer"><a href="{{ url_for('users.login') }}">Already have an account? Click here!</a></div>
 {% endblock %}
