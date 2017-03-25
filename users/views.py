@@ -31,10 +31,11 @@ def register():
     if hasattr(g, "user"):
         return redirect(url_for("index"))
     if request.method == "POST":
+        name = request.form.get("name", None)
         email = request.form.get("email", None)
         password = request.form.get("password", None)
         confirm = request.form.get("confirm", None)
-        if not email or not password:
+        if not name or not email or not password:
             flash("Please fill out all of the fields!", "error")
             return redirect(url_for(".register"))
         if password != confirm:
@@ -46,7 +47,7 @@ def register():
             return redirect(url_for(".register"))
         except User.DoesNotExist:
             pass
-        User.create(email=email, password=password)
+        User.create(name=name, email=email, password=password)
         flash("Your account has been created!", "success")
         return redirect(url_for("index"))
     else:
