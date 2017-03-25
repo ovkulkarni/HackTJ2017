@@ -5,7 +5,7 @@ from functools import wraps
 def login_required(f):
     @wraps(f)
     def _decorated(*args, **kwargs):
-        if hasattr(g, "user"):
+        if g.user is not None:
             return f(*args, **kwargs)
         else:
             flash("You must be logged in to perform this action.", "error")

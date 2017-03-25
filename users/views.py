@@ -1,12 +1,14 @@
-from flask import Blueprint, request, redirect, flash, g, render_template, url_for
+from flask import Blueprint, request, redirect, flash, g, render_template, url_for, session
 
 from .models import User
+
+from utils import get_current_user
 
 blueprint = Blueprint("users", __name__, url_prefix="/user")
 
 @blueprint.route("/login/", methods=["GET", "POST"])
 def login():
-    if hasattr(g, "user"):
+    if g.user:
         return redirect(url_for("index"))
     if request.method == "POST":
         error = False
@@ -20,15 +22,15 @@ def login():
             flash("Failed login!", "error")
             return redirect(url_for(".login"))
         else:
-            g.user = u
-            print(g)
-            return redirect(url_for("index"))
+            session["uid"] = u.id
+            session["logged_in"] = True
+            return redirect(request.args.get("next", url_for("index")))
     else:
         return render_template("login.html")
 
 @blueprint.route("/register/", methods=["GET", "POST"])
 def register():
-    if hasattr(g, "user"):
+    if g.user:
         return redirect(url_for("index"))
     if request.method == "POST":
         name = request.form.get("name", None)
@@ -49,7 +51,18 @@ def register():
             pass
         u = User.create(name=name, email=email, password=password)
         flash("Your account has been created!", "success")
-        g.user = u
-        return redirect(url_for(".login"))
+        session["uid"] = u.id
+        session["logged_in"] = True
+        return redirect(url_for("index"))
     else:
         return render_template("register.html")
+
+@blueprint.route("/logout/")
+def logout():
+    session["uid"] = -1
+    session["logged_in"] = False
+    return redirect(url_for("index"))
+
+@blueprint.before_app_request
+def set_user():
+    g.user = get_current_user()

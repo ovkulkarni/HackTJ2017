@@ -2,6 +2,9 @@ import settings
 import importlib
 import sys
 from db import db
+from flask import session
+
+from users.models import User
 
 def init_blueprints(app):
     blueprints = []
@@ -18,3 +21,8 @@ def init_database():
         importlib.import_module(model[0])
         models.append(getattr(sys.modules[model[0]], model[1]))
     db.create_tables(models)
+
+def get_current_user():
+    if "uid" in session and session["logged_in"]:
+        return User.get(User.id == session['uid'])
+    return None
