@@ -12,6 +12,3 @@ init_blueprints(app)
 @app.route("/")
 def index():
     return render_template("login.html")
-
-if __name__ == "__main__":
-    app.run(threaded=True, debug=settings.DEBUG)
