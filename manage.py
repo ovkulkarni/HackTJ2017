@@ -7,7 +7,7 @@ from utils import init_database
 manager = Manager(app)
 
 @manager.command
-def init_db():
+def migrate():
     init_database()
 
 if __name__ == '__main__':
