@@ -7,3 +7,5 @@ MODULES = [
 MODELS = [
         ("users.models", "User"),
         ]
+
+SECRET_KEY = "secret"
