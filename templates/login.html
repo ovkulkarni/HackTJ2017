@@ -11,7 +11,6 @@
         border-radius: 5px;
     }
     </style>
-	<link rel="stylesheet" href="{{ url_for('static',filename='css/base.css')}}">
 {% endblock %}
 
 {% block content %}
@@ -34,5 +33,6 @@
         </div>
         <button type="submit" class="btn btn-primary pull-right">Login</button>
     </form>
+    <a href="{{ url_for('users.register') }}">Don't have an account? Click here!</a>
 </div>
 {% endblock %}
