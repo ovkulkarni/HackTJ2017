@@ -78,20 +78,20 @@ $(document).ready(function() {
             },
             "modes": {
                 "grab": {
-                    "distance": 400,
+                    "distance": 100,
                     "line_linked": {
                         "opacity": 1
                     }
                 },
                 "bubble": {
-                    "distance": 400,
+                    "distance": 100,
                     "size": 40,
                     "duration": 2,
                     "opacity": 8,
                     "speed": 3
                 },
                 "repulse": {
-                    "distance": 200,
+                    "distance": 100,
                     "duration": 0.4
                 },
                 "push": {
