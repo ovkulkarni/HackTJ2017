@@ -20,7 +20,7 @@ def login():
             error = True
         if error:
             flash("Failed login!", "error")
-            return redirect(url_for(".login"))
+            return render_template("login.html", email=request.form.get("email",""))
         else:
             session["uid"] = u.id
             session["logged_in"] = True

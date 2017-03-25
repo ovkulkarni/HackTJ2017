@@ -104,4 +104,8 @@ $(document).ready(function() {
         },
         "retina_detect": true
     });
+
+    if($("#id_email").val().length > 0) {
+        $("#id_password").focus();
+    }
 });
