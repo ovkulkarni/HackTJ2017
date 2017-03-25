@@ -19,9 +19,10 @@ def login():
             error = True
         if error:
             flash("Failed login!", "error")
+            return redirect(url_for(".login"))
         else:
             g.user = u
-        return redirect(url_for("index"))
+            return redirect(url_for("index"))
     else:
         return render_template("login.html")
 
