@@ -2,6 +2,7 @@ DEBUG = True
 
 MODULES = [
         "users",
+        "programs"
         ]
 
 MODELS = [
