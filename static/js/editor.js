@@ -159,11 +159,12 @@ function openInformation(block) {
         // Serialize and send
         $("#conditional-modal").modal('hide');
     });
-    $(".save-modal").click(function(){
+    $(".save-modal").off("click").click(function(){
         block = blocks[$(this).attr("data-id")];
         Object.keys(current_types[block.automate_type].inputs).forEach(function(input) {
             block.inputs[input] = $("#id_" + input).val();
         });
+        $("#conditional-modal").modal("hide");
     });
 };
 
