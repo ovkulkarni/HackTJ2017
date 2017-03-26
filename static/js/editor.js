@@ -155,11 +155,7 @@ function openInformation(block) {
         });
     }
     $("#conditional-modal").modal();
-    $("#conditional-modal #save").click(function() {
-        // Serialize and send
-        $("#conditional-modal").modal('hide');
-    });
-    $(".save-modal").off("click").click(function(){
+    $("#conditional-modal .save-modal").off("click").click(function(){
         block = blocks[$(this).attr("data-id")];
         Object.keys(current_types[block.automate_type].inputs).forEach(function(input) {
             block.inputs[input] = $("#id_" + input).val();
@@ -639,4 +635,9 @@ $(document).ready(function() {
         $(window).off('contextmenu', cancelMenu);
         return false;
     }
+    $("#conditional-modal .modal-body").on("keydown", "input", function(e) {
+        if (e.keyCode == 13) {
+            $("#conditional-modal .save-modal").click();
+        }
+    });
 });
