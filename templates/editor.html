@@ -13,7 +13,7 @@
     <script src="{{ url_for('static', filename='js/editor.js') }}"></script>
     <script>
     var save_endpoint = "{{ url_for('programs.save') }}";
-    var program_id = {{ prog_id }};
+    var program_id = {{ prog_id|default("-1") }};
     </script>
 {% endblock %}
 
