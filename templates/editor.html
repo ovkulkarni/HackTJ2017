@@ -21,6 +21,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.7.9/fabric.min.js" integrity="sha256-D5qjlhHft5LNta9Zzei8iPWEAGyIQt6JkWftlBA81yk=" crossorigin="anonymous"></script>
     <script>
     var canvas;
+    var blocks = [];
     var blockSize = 100;
 
     function addBlock(name, type) {
@@ -62,6 +63,7 @@
         block.connections = [];
         block.setControlsVisibility({"mtr": false});
         canvas.add(block);
+        blocks.push(block);
         return block;
     }
 
@@ -97,7 +99,6 @@
 
     function recalculateConnection(v) {
         var angle = Math.atan2(v.from.top - v.to.top, v.to.left - v.from.left)*180/Math.PI;
-        console.log(angle);
         var fPos = "bottom";
         var tPos = "top";
         if (angle >= -45 && angle <= 45) {
@@ -203,11 +204,16 @@
                                 canvas.remove(v);
                             }
                             catch (e) { }
+                            blocks.splice(blocks.indexOf(v), 1);
                         }
                     });
                 }
                 else {
-                    canvas.remove(canvas.getActiveObject());
+                    var obj = canvas.getActiveObject();
+                    canvas.remove(obj);
+                    if (obj == "block") {
+                        blocks.splice(blocks.indexOf(obj), 1);
+                    }
                 }
             }
         });
