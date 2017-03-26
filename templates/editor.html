@@ -14,6 +14,12 @@
     <script>
     var save_endpoint = "{{ url_for('programs.save') }}";
     var program_id = {{ prog_id|default("-1") }};
+    try {
+        var program_save = "{{ json|replace('"', '\\"')|safe }}";
+    }
+    catch (e) {
+        var program_save = "";
+    }
     </script>
 {% endblock %}
 

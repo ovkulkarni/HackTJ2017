@@ -734,4 +734,13 @@ $(document).ready(function() {
             $("#conditional-modal .save-modal").click();
         }
     });
+
+    if (program_save) {
+        try {
+            load(JSON.parse(program_save));
+        }
+        catch (e) {
+            Messenger().error("Failed to load existing program!");
+        }
+    }
 });
