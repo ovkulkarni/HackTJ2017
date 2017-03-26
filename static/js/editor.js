@@ -6,18 +6,24 @@ var counter = 0;
 var trigger_types = {
     rss: {
         name: "RSS",
-        inputs: [
-            'url'
-        ],
+        inputs: {
+            'url': {
+                name: "RSS Feed URL",
+                type: "url"
+            }
+        },
         outputs: [
             'url', 'title', 'text', 'time'
         ]
     },
     time: {
         name: "Time",
-        inputs: [
-            'time'
-        ],
+        inputs: {
+            'time': {
+                name: "Trigger Time",
+                type: "datetime"
+            }
+        },
         outputs: [
             'time'
         ]
@@ -25,11 +31,18 @@ var trigger_types = {
 };
 
 var event_types = {
-    text: {
+    sms: {
         name: "SMS",
-        inputs: [
-            'phone', 'message'
-        ],
+        inputs: {
+            'phone': {
+                name: "Phone Number",
+                type: "phone"
+            },
+            'message': {
+                name: "Text Message",
+                type: "text"
+            }
+        },
         outputs: [
         ]
     }
@@ -38,9 +51,18 @@ var event_types = {
 var conditional_types = {
     'if': {
         name: "IF",
-        inputs: [
-            'invalue', 'operation', 'outvalue'
-        ],
+        inputs: {
+            'invalue': {
+                name: "Left Side",
+                type: "text"
+            }, 'operation': {
+                name: "Operation",
+                type: "operation"
+            }, 'outvalue': {
+                name: "Right Side",
+                type: "text"
+            }
+        },
         outputs: [
             'boolean'
         ]
@@ -96,22 +118,20 @@ function genOptionString(block, gen_type, type) {
 function openInformation(block) {
     var $bod = $("#conditional-modal .modal-body");
     $bod.html("");
-    if(block.automate_general_type == "trigger"){
+    var current_types = event_types;
+    if (block.automate_general_type == "trigger") {
+        current_types = trigger_types;
+    }
+    if (block.automate_general_type == "conditional") {
+        current_types = conditional_types;
+    }
+    if(block.automate_general_type == "trigger" || block.automate_general_type == "event"){
         inner_html = "";
-        trigger_types[block.automate_type].inputs.forEach(function(input){
+        $.each(current_types[block.automate_type].inputs, function(input, details) {
             curr_val = "";
             if(block.inputs[input]) curr_val = block.inputs[input];
-            inner_html += '<div class="form-group"><div class="input-group"><input id="id_' + input + '" name="' + input + '" type="text" class="form-control" placeholder="' + input + '" value="' + curr_val + '" /></div></div>'
-            $(".save-modal").data("id", block.id)
-        });
-        $("#conditional-modal .modal-body").html(inner_html);
-    } else if(block.automate_general_type == "event"){
-        inner_html = "";
-        event_types[block.automate_type].inputs.forEach(function(input){
-            curr_val = "";
-            if(block.inputs[input]) curr_val = block.inputs[input];
-            inner_html += '<div class="form-group"><div class="input-group"><input id="id_' + input + '" name="' + input + '" type="text" class="form-control" placeholder="' + input + '" value="' + curr_val + '" /></div></div>'
-            $(".save-modal").data("id", block.id)
+            inner_html += '<div class="form-group"><div class="input-group"><input id="id_' + input + '" name="' + input + '" type="text" class="form-control" placeholder="' + details.name + '" value="' + curr_val + '" /></div></div>'
+            $(".save-modal").data("id", block.id);
         });
         $("#conditional-modal .modal-body").html(inner_html);
     } else if(block.automate_general_type == "conditional") {
@@ -142,7 +162,7 @@ function openInformation(block) {
     $(".save-modal").click(function(){
         block = blocks[$(this).data("id")];
         if(block.automate_general_type == "trigger"){
-            trigger_types[block.automate_type].inputs.forEach(function(input){
+            Object.keys(current_types[block.automate_type].inputs).forEach(function(input){
                 block.inputs[input] = $("#id_" + input).val();
             });
         }
@@ -531,7 +551,7 @@ $(document).ready(function() {
         }
     }
     $(window).on("keydown", function(e) {
-        if (e.keyCode == 46 || e.keyCode == 8) {
+        if (e.keyCode == 46) {
             deleteSelected();
         }
         if (e.keyCode == 83 && (e.ctrlKey || e.metaKey)) {
