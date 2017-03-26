@@ -55,3 +55,7 @@ a#footer-text {
     margin-top: 10px;
     display: block;
 }
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px rgb(220,220,220) inset;
+}
