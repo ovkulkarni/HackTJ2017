@@ -13,14 +13,19 @@
 
 {% block content %}
 <div id="particles-js"></div>
-    <div id="Home" class="container main">
-        <h3>Home</h3>
-        <p>Email: {{ user.email }}</p>
-        <p>
-        Leverage agile frameworks to provide a robust synopsis for high level overviews. Iterative approaches to corporate strategy foster collaborative thinking to further the overall value proposition. Organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.
-
-Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.
-
-Capitalize on low hanging fruit to identify a ballpark value added activity to beta test. Override the digital divide with additional clickthroughs from DevOps. Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.</p>
-    </div>
+<h3>Your Programs</h3>
+<div id="home" class="container main">
+    {% if not user.programs %}
+        <div class="noprog">
+            <h5>It looks like you haven't made any programs yet</h5>
+            <a href="{{ url_for('programs.editor') }}" class="btn btn-primary">Start a program!</a>
+        </div>
+    {% else %}
+        {% for prog in user.programs %}
+            <div class="program col-sm-6">
+                {{ prog.name }}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
 {% endblock %}

@@ -65,7 +65,9 @@ def logout():
 
 @blueprint.route("/settings", methods=["GET","POST"])
 def settings():
-    return render_template("settings.html", user=g.user)
+    return redirect(url_for("index"))
+    # No use for a real settings page
+    # return render_template("settings.html", user=g.user)
 
 @blueprint.before_app_request
 def set_user():
