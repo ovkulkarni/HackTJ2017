@@ -93,12 +93,21 @@
 
     function connectBlocks(a, b) {
         if (a == b) {
-            return;
+            return null;
+        }
+        var flag = false;
+        $.each(a.connections, function(k, v) {
+            if (v.from == b || v.to == b) {
+                flag = true;
+                return false;
+            }
+        });
+        if (flag) {
+            return null;
         }
         var line = new fabric.Line([0, 0, 1, 1], {
             stroke: "red",
             strokeWidth: 2,
-            selectable: false,
             originX: "left",
             originY: "top"
         });
@@ -122,6 +131,7 @@
         recalculateConnection(line);
         canvas.add(line);
         canvas.add(triangle);
+        return line;
     }
 
     function recalculateConnection(v) {
