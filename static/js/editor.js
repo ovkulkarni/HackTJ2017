@@ -260,12 +260,28 @@ function serialize() {
     return recur_serialize(starting_block);
 }
 
+function serialize_and_save() {
+    var out = serialize();
+    if (out) {
+        $.post(save_endpoint, { program: JSON.stringify(out) }, function(data) {
+            Messenger().success("Program saved!");
+        });
+    }
+    else {
+        Messenger().error("Invalid program! You must have a trigger.");
+    }
+}
+
+function block_serialize(b) {
+    return { name: b.name, type: b.automate_general_type, values: b.inputs };
+}
+
 function recur_serialize(b) {
     var next = b.connectionsTo;
-    var out = [b];
+    var out = [block_serialize(b)];
     while (next.length == 1) {
         next = next[0];
-        out.push(next);
+        out.push(block_serialize(next));
         next = next.connectionsTo;
     }
     if (next.length == 2) {
@@ -485,5 +501,10 @@ $(document).ready(function() {
 
     $("#picker-close").click(function(el) {
         $("#picker").toggleClass("closed");
+    });
+
+    $("#save").click(function(e) {
+        e.preventDefault();
+        serialize_and_save();
     });
 });

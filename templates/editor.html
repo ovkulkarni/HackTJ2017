@@ -11,6 +11,9 @@
     {{ super() }}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.7.9/fabric.min.js" integrity="sha256-D5qjlhHft5LNta9Zzei8iPWEAGyIQt6JkWftlBA81yk=" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='js/editor.js') }}"></script>
+    <script>
+    var save_endpoint = "{{ url_for('programs.save') }}";
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -26,6 +29,8 @@
             <span id="default" class="tool active"><i class="fa fa-fw fa-mouse-pointer"></i></span>
             <span id="arrow" class="tool"><i class="fa fa-fw fa-expand"></i></span>
             <span id="delete" class="tool"><i class="fa fa-fw fa-trash-o"></i></span>
+            <hr />
+            <button id="save" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save</button>
         </div>
         <i class="fa fa-times close-icon" id="picker-close"></i>
     </div>
