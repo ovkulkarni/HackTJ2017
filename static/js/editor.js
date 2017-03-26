@@ -44,7 +44,7 @@ var trigger_types = {
 
 var event_types = {
     sms: {
-        name: "SMS",
+        name: "Send SMS",
         inputs: {
             'phone': {
                 name: "Phone Number",
@@ -59,11 +59,19 @@ var event_types = {
         ]
     },
     email: {
-        name: "Email",
+        name: "Send Email",
         inputs: {
             'address': {
                 name: "Email Address",
                 type: "email"
+            },
+            'subject': {
+                name: "Email Subject",
+                type: "text"
+            },
+            'message': {
+                name: "Email Message",
+                type: "text"
             }
         },
         outputs: []
@@ -99,6 +107,12 @@ var conditional_types = {
         },
         outputs: []
     }
+};
+
+var type_lookup = {
+    "trigger": trigger_types,
+    "event": event_types,
+    "conditional": conditional_types
 };
 
 var if_operations = [
@@ -209,6 +223,7 @@ function openInformation(block) {
 };
 
 function addBlock(name, type, noOffset, displayName) {
+    displayName = displayName || type_lookup[type][name].name;
     var rect = new fabric.Rect({
         fill: colors[type || "none"].fg,
         width: blockSize,
@@ -588,6 +603,7 @@ $(document).ready(function() {
                 delete blocks[obj.id];
             }
         }
+        $("#conditional-modal").modal("hide");
     }
     $(window).on("keydown", function(e) {
         if (e.keyCode == 46) {
