@@ -23,7 +23,6 @@ class Condition(BaseModel):
 class Loop(BaseModel):
     loop_type = CharField()
     condition = ForeignKeyField(Condition)
-    iterations = IntegerField(null=True)
 
 class Block(BaseModel):
     program = ForeignKeyField(Program)
