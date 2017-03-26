@@ -11,6 +11,7 @@ class Trigger(BaseModel):
     results = CharField()
 
 class Event(BaseModel):
+    args = CharField()
     action = CharField()
 
 class Condition(BaseModel):
