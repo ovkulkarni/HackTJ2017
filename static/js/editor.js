@@ -563,9 +563,18 @@ $(document).ready(function() {
             addBlock(el.innerHTML, "conditional");
         };
     });
-    $(".tool").click(function() {
-        $(".tool").removeClass("active");
-        $(this).addClass("active");
+    $(".tool").click(function(e) {
+        e.preventDefault();
+        if ($(this).attr("id") == "filter") {
+            var a = serialize();
+            if (a) {
+                load(a);
+            }
+        }
+        else {
+            $(".tool").removeClass("active");
+            $(this).addClass("active");
+        }
     });
 
     $("#picker-close").click(function(el) {
@@ -576,4 +585,30 @@ $(document).ready(function() {
         e.preventDefault();
         serialize_and_save();
     });
+    $("canvas").mousedown(startPan);
+    function startPan(event) {
+        if (event.button != 2) {
+            return;
+        }
+        var x0 = event.screenX,
+        y0 = event.screenY;
+        function continuePan(event) {
+            var x = event.screenX,
+            y = event.screenY;
+            canvas.relativePan({ x: x - x0, y: y - y0 });
+            x0 = x;
+            y0 = y;
+        }
+        function stopPan(event) {
+            $(window).off('mousemove', continuePan);
+            $(window).off('mouseup', stopPan);
+        };
+        $(window).mousemove(continuePan);
+        $(window).mouseup(stopPan);
+        $(window).contextmenu(cancelMenu);
+    };
+    function cancelMenu() {
+        $(window).off('contextmenu', cancelMenu);
+        return false;
+    }
 });
