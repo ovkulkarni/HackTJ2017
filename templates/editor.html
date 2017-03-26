@@ -1,5 +1,80 @@
 {% extends "base-nav.html" %}
 
+{% block css %}
+    {{ super() }}
+    <style>
+    body {
+        overflow: hidden;
+        background-color: #434343;
+        background-image:linear-gradient(#434343, #282828);
+    }
+    #content {
+        background-image: linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent);
+        background-size: 50px 50px;
+    }
+    </style>
+{% endblock %}
+
+{% block js %}
+    {{ super() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.7.9/fabric.min.js" integrity="sha256-D5qjlhHft5LNta9Zzei8iPWEAGyIQt6JkWftlBA81yk=" crossorigin="anonymous"></script>
+    <script>
+    var canvas;
+
+    function addBlock() {
+        var rect = new fabric.Rect({
+            fill: "#2196F3",
+            width: 100,
+            height: 100
+        });
+        rect.type = "block";
+        rect.stroke = "#1565C0";
+        rect.strokeWidth = 1;
+        var text = new fabric.Text("hello world", {
+            left: 50,
+            top: 50,
+            fontSize: 16,
+            textAlign: "center",
+            originX: "center",
+            originY: "center",
+            fontFamily: "sans-serif"
+        });
+        var block = new fabric.Group([rect, text], {
+            left: 25,
+            top: 25,
+            lockRotation: true,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockUniScaling: true
+        });
+        block.setControlsVisibility({"mtr": false});
+        canvas.add(block);
+    }
+
+    $(document).ready(function() {
+        canvas = new fabric.Canvas("editor");
+        canvas.on("object:moving", function(e) {
+        });
+        canvas.on("object:removed", function(e) {
+        });
+        addBlock();
+        $(window).on("resize", function() {
+            var width = window.innerWidth;
+            var height = window.innerHeight - $("nav").height();
+            $("#content").css("width", width + "px").css("height", height + "px");
+            canvas.setWidth(width);
+            canvas.setHeight(height);
+        });
+        $(window).on("keydown", function(e) {
+            if (e.keyCode == 46) {
+                canvas.remove(canvas.getActiveObject());
+            }
+        });
+        $(window).resize();
+    });
+    </script>
+{% endblock %}
+
 {% block content %}
-<h1>Insert Stuff Here!</h1>
+<canvas id="editor"></canvas>
 {% endblock %}
