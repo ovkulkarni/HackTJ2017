@@ -25,7 +25,17 @@
 
     function addBlock(name, type) {
         var rect = new fabric.Rect({
-            fill: type == "trigger" ? "#2196F3" : "#EE4560",
+            fill: (function() {
+                switch(type) {
+                    case 'conditional':
+                        return 'orange';
+                    case 'trigger':
+                        return 'red';
+                    case 'event':
+                        return 'blue';
+                }
+                return 'green';
+            })(),
             width: blockSize,
             height: blockSize
         });
@@ -172,6 +182,11 @@
                 addBlock(el.innerHTML, "event");
             };
         });
+        $("#conditionals div").each(function(i,el) {
+            el.onclick = function() {
+                addBlock(el.innerHTML, "conditional");
+            };
+        });
     });
     </script>
 {% endblock %}
@@ -189,6 +204,12 @@
             <div id="events">
                 <div class="call">Call</div>
                 <div class="text">Text</div>
+            </div>
+            <h3>Conditionals</h3>
+            <div id="conditionals">
+                <div class="while">While</div>
+                <div class="if">If</div>
+                <div class="else">Else</div>
             </div>
         </div>
         <div id="picker-arrow">
