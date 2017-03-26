@@ -20,6 +20,9 @@ ARGS_MAPPINGS = {
                     "phone": "string",
                     "message": "string"
                 },
+            'twitter': {
+                    "handle": "string"
+                },
             'if': {
                     'inner': 'string',
                     'oper': 'string',
@@ -32,6 +35,11 @@ RESULTS_MAPPINGS = {
                     "url": "string",
                     "title": "string",
                     "text": "string"
+                },
+            'twitter': {
+                    'handle': 'string',
+                    'body': 'string',
+                    'date': 'string'
                 }
         }
 
