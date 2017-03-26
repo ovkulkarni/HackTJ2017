@@ -61,6 +61,7 @@ body {
     text-align: center;
     line-height: 65px;
     color: black;
+    margin-right: 5px;
 }
 #triggers div {
     border-color: #D32F2F;

@@ -87,7 +87,6 @@ function genOptionString(block, gen_type, type) {
 function openInformation(block) {
     var $bod = $("#conditional-modal .modal-body");
     $bod.html("");
-    console.log(block.connections);
     if(block.automate_general_type == "trigger"){
         inner_html = "";
         trigger_types[block.automate_type].inputs.forEach(function(input){
@@ -123,10 +122,8 @@ function openInformation(block) {
         if(block.automate_general_type == "trigger"){
             trigger_types[block.automate_type].inputs.forEach(function(input){
                 block.inputs[input] = $("#id_" + input).val();
-                console.log(input);
             });
         }
-        console.log(block.inputs)
     });
 };
 
@@ -390,7 +387,6 @@ $(document).ready(function() {
     Object.keys(type_div_map).forEach(function(key) {
         types = Object.keys(type_div_map[key]);
         types.forEach(function(t) {
-            console.log($(key));
             $(key).append("<div class='"+t+"'>"+t+"</div>");
         });
     });
