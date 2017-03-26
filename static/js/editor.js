@@ -126,18 +126,18 @@ function openInformation(block) {
         current_types = conditional_types;
     }
     if(block.automate_general_type == "trigger" || block.automate_general_type == "event") {
-        inner_html = "";
+        $("#conditional-modal .modal-body").html("");
         $.each(current_types[block.automate_type].inputs, function(input, details) {
             curr_val = "";
             if(block.inputs[input]) curr_val = block.inputs[input];
-            inner_html += '<div class="form-group"><div class="input-group"><input id="id_' + input + '" name="' + input + '" type="text" class="form-control" placeholder="' + details.name + '" value="' + curr_val + '" /></div></div>'
+            var item = $('<div class="form-group"><div class="input-group"><input id="id_' + input + '" name="' + input + '" type="text" class="form-control" placeholder="' + details.name + '" value="' + curr_val + '" /></div></div>');
+            $("#conditional-modal .modal-body").append(item);
         });
         $(".save-modal").attr("data-id", block.id);
-        $("#conditional-modal .modal-body").html(inner_html);
     } else if(block.automate_general_type == "conditional") {
-        $op1 = $bod.append("<div class='operand1'><select></select></div>").find(".operand1 select");
-        $oper = $bod.append("<div class='operation'><select></select></div>").find(".operation select");
-        $op2 = $bod.append("<div class='operand2'><select></select></div>").find(".operand2 select");
+        $op1 = $bod.append("<div class='operand1 form-group'><select class='form-control'></select></div>").find(".operand1 select");
+        $oper = $bod.append("<div class='operation form-group'><select class='form-control'></select></div>").find(".operation select");
+        $op2 = $bod.append("<div class='operand2 form-group'><select class='form-control'></select></div>").find(".operand2 select");
         var append = function(blk) {
             blk.connectionsFrom.forEach(function(from) {
                 append(from);
