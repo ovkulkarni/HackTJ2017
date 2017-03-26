@@ -73,12 +73,26 @@
             originX: "left",
             originY: "top"
         });
+        line.type = "line";
+        var triangle = new fabric.Triangle({
+            angle: 0,
+            fill: "red",
+            top: 0,
+            left: 0,
+            height: 25,
+            width: 25,
+            originX: "center",
+            originY: "center",
+            selectable: false
+        });
+        line.triangle = triangle;
         line.from = a;
         line.to = b;
         a.connections.push(line);
         b.connections.push(line);
         recalculateConnection(line);
         canvas.add(line);
+        canvas.add(triangle);
     }
 
     function recalculateConnection(v) {
@@ -114,11 +128,16 @@
         if (fPos == "bottom") {
             v.top += blockSize / 2;
         }
+        v.triangle.left = v.left + v.width;
+        if (tPos == "left") {
+            v.triangle.left -= blockSize;
+        }
         if (v.width < 0) {
             v.left += v.width;
         }
         v.width = Math.abs(v.width);
         v.height = (v.to.top + v.to.height / 2) - v.top;
+        v.set("flipY", v.height < 0);
         if (tPos == "left") {
             v.width -= blockSize;
         }
@@ -131,15 +150,16 @@
         if (tPos == "bottom") {
             v.height += blockSize / 2;
         }
+        v.triangle.top = v.top + v.height;
         if (v.height < 0) {
             v.top += v.height;
         }
-        v.set("flipY", v.height < 0);
         v.height = Math.abs(v.height);
+        v.triangle.angle = 90 - angle;
     }
 
     $(document).ready(function() {
-        canvas = new fabric.Canvas("editor");
+        canvas = new fabric.Canvas("editor", { preserveObjectStacking: true });
         canvas.on("object:moving", function(e) {
             if (e.target.type == "block") {
                 $.each(e.target.connections, function(k, v) {
