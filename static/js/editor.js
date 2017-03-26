@@ -5,6 +5,7 @@ var counter = 0;
 
 var trigger_types = {
     rss: {
+        name: "RSS",
         inputs: [
             'url'
         ],
@@ -13,6 +14,7 @@ var trigger_types = {
         ]
     },
     time: {
+        name: "Time",
         inputs: [
             'time'
         ],
@@ -24,6 +26,7 @@ var trigger_types = {
 
 var event_types = {
     text: {
+        name: "SMS",
         inputs: [
             'phone', 'message'
         ],
@@ -34,6 +37,7 @@ var event_types = {
 
 var conditional_types = {
     'if': {
+        name: "IF",
         inputs: [
             'invalue', 'operation', 'outvalue'
         ],
@@ -145,7 +149,7 @@ function openInformation(block) {
     });
 };
 
-function addBlock(name, type, noOffset) {
+function addBlock(name, type, noOffset, displayName) {
     var rect = new fabric.Rect({
         fill: colors[type || "none"].fg,
         width: blockSize,
@@ -153,7 +157,7 @@ function addBlock(name, type, noOffset) {
     });
     rect.stroke = colors[type || "none"].bg;
     rect.strokeWidth = 1;
-    var text = new fabric.Text(name, {
+    var text = new fabric.Text(displayName, {
         left: blockSize / 2,
         top: blockSize / 2,
         fontSize: 16,
@@ -336,7 +340,7 @@ function serialize_and_save() {
 }
 
 function block_serialize(b) {
-    return { name: b.name, type: b.automate_general_type, values: b.inputs };
+    return { id: b.id, name: b.name, type: b.automate_general_type, values: b.inputs };
 }
 
 function recur_serialize(b) {
@@ -546,23 +550,23 @@ $(document).ready(function() {
     Object.keys(type_div_map).forEach(function(key) {
         types = Object.keys(type_div_map[key]);
         types.forEach(function(t) {
-            $(key).append("<div class='"+t+"'>"+t+"</div>");
+            $(key).append("<div class='" + t + "'>" + type_div_map[key][t].name + "</div>");
         });
     });
 
     $("#triggers div").each(function(i,el) {
         el.onclick = function() {
-            addBlock(el.innerHTML, "trigger");
+            addBlock(el.className, "trigger", false, el.innerHTML);
         };
     });
     $("#events div").each(function(i,el) {
         el.onclick = function() {
-            addBlock(el.innerHTML, "event");
+            addBlock(el.className, "event", false, el.innerHTML);
         };
     });
     $("#conditionals div").each(function(i,el) {
         el.onclick = function() {
-            addBlock(el.innerHTML, "conditional");
+            addBlock(el.className, "conditional", false, el.innerHTML);
         };
     });
     $(".tool").click(function(e) {
