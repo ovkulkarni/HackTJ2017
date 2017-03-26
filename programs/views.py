@@ -40,6 +40,11 @@ RESULTS_MAPPINGS = {
 def editor():
     return render_template("editor.html", user=g.user)
 
+@blueprint.route("/editor/<int:id>")
+@login_required
+def edit(id):
+    return str(id)
+
 
 @blueprint.route("/save/", methods=["POST"])
 @login_required
