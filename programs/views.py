@@ -19,6 +19,11 @@ ARGS_MAPPINGS = {
             'sms': {
                     "phone": "string",
                     "message": "string"
+                },
+            'if': {
+                    'inner': 'string',
+                    'oper': 'string',
+                    'outer': 'string'
                 }
         }
 
@@ -40,7 +45,12 @@ def editor():
 @login_required
 def save():
     prgrm = json.loads(request.form.get("program"))
+    print(prgrm)
     p = Program.create(owner=g.user)
+    process_program(prgrm, p)
+    return jsonify({"success": True})
+
+def process_program(prgrm, p):
     db_blocks = []
     for block in prgrm:
         if block["type"] == "trigger":
@@ -50,30 +60,42 @@ def save():
         elif block["type"] == "event":
             e = Event.create(args=formatted_args(block, db_blocks), action=block["name"])
             b = Block.create(program=p, block_type="e", event=e)
-            db_blocks.append(e)
+            db_blocks.append(b)
+        elif block["type"] == "conditional":
+            in_args = process_value(block["values"]["left"], db_blocks)
+            check = block["values"]["operator"]
+            out_args = process_value(block["values"]["right"], db_blocks)
+            c = Condition.create(in_val=in_args, check=check, out_val=out_args)
+            b = Block.create(program=p, block_type="c", condition=c)
+            inner_b = process_program(block["inner"], p)
+            outer_b = process_program(block["outer"], p)
+            cl = ConditionalLink.create(condition=c, inner=inner_b, outer=outer_b)
+            db_blocks.append(b)
     for i, val in enumerate(db_blocks[:-1]):
         l = Link.create(source=db_blocks[i], destination=db_blocks[i+1])
-    return jsonify({"success": True})
+    return db_blocks[0]
 
-def formatted_args(block, all_blocks=None):
+def process_value(val, all_blocks=[])
+    match = matcher.match(val)
+    if match:
+        new_val = match.group(1)
+        block_type = new_val.split(".")[0]
+        val_block = None
+        for b in all_blocks:
+            if b.block_type == "t":
+                if b.trigger.trigger_type == block_type:
+                    val_block = b
+            elif b.block_type == "e":
+                if b.event.action == block_type:
+                    val_block = b
+        get_val = new_val.split(".")[1]
+        val = re.sub("{{.*}}", "{" + "id_{}[{}]".format(val_block.id, get_val)+ "}", val)
+    return val
+
+def formatted_args(block, all_blocks=[]):
     args = "["
     for key in ARGS_MAPPINGS[block["name"]]:
-        val = block["values"][key]
-        match = matcher.match(val)
-        if match:
-            new_val = match.group(1)
-            block_type = new_val.split(".")[0]
-            val_block = None
-            for b in all_blocks:
-                if b.block_type == "t":
-                    if b.trigger.trigger_type == block_type:
-                        val_block = b
-                elif b.block_type == "e":
-                    if b.event.action == block_type:
-                        val_block = b
-            get_val = new_val.split(".")[1]
-            val = re.sub("{{.*}}", "{" + "id_{}[{}]".format(val_block.id, get_val)+ "}", val)
-        args += "('{}', '{}', '{}'), ".format(val, key, ARGS_MAPPINGS[block["name"]][key])
+        args += "('{}', '{}', '{}'), ".format(process_value(val, all_blocks), key, ARGS_MAPPINGS[block["name"]][key])
     args = args[:-2]
     args += "]"
     return args
