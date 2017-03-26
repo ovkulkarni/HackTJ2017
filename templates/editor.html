@@ -12,6 +12,18 @@
         background-image: linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent);
         background-size: 50px 50px;
     }
+    #arrow .fa {
+        font-size: 24px;
+        color: white;
+        background-color: black;
+        border: 3px solid transparent;
+        padding: 3px;
+    }
+    #arrow.active .fa {
+        color: black;
+        background-color: white;
+        border: 3px solid #666;
+    }
     </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/editor.css') }}">
 {% endblock %}
@@ -168,6 +180,26 @@
                 });
             }
         });
+        var lastClick = null;
+        var prevBlock = null;
+        canvas.on("mouse:down", function(e) {
+            lastClick = new Date();
+        });
+        canvas.on("mouse:up", function(e) {
+            var time = new Date().getTime() - lastClick.getTime();
+            if (time < 100) {
+                var obj = canvas.getActiveObject();
+                if (obj && obj.type == "block") {
+                    if (prevBlock) {
+                        connectBlocks(prevBlock, obj);
+                        prevBlock = null;
+                    }
+                    else {
+                        prevBlock = obj;
+                    }
+                }
+            }
+        });
         canvas.on("object:removed", function(e) {
             if (e.target.type == "block") {
                 $.each(e.target.connections, function(k, v) {
@@ -179,14 +211,12 @@
                         v.to.connections.splice(v.to.connections.indexOf(v), 1);
                     }
                 });
+                canvas.deactivateAll();
             }
             if (e.target.type == "line") {
                 canvas.remove(e.target.triangle);
             }
         });
-        var a = addBlock("block 1");
-        var b = addBlock("block 2");
-        connectBlocks(a, b);
         $(window).on("resize", function() {
             var width = window.innerWidth;
             var height = window.innerHeight - $("nav").height();
@@ -233,6 +263,9 @@
                 addBlock(el.innerHTML, "conditional");
             };
         });
+        $("#arrow").click(function() {
+            $(this).toggleClass("active");
+        });
     });
     </script>
 {% endblock %}
@@ -257,6 +290,8 @@
                 <div class="if">If</div>
                 <div class="else">Else</div>
             </div>
+            <hr />
+            <div id="arrow"><i class="fa fa-expand"></i></div>
         </div>
         <div id="picker-arrow">
         </div>
