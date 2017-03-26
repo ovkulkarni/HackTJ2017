@@ -56,10 +56,13 @@ def edit(id):
 @blueprint.route("/delete/<int:id>")
 @login_required
 def delete(id):
-    p = Program.get(Programs.id == id)
-    if(g.user == p.owner):
+    p = Program.get(Program.id == id)
+    if (g.user == p.owner):
+        flash("Program deleted!", "success")
         p.delete()
-    return render_template("index.html", user=g.user)
+    else:
+        flash("You do not have permission to delete this program!", "error")
+    return redirect(url_for("index"))
 
 
 @blueprint.route("/save/", methods=["POST"])
