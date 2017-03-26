@@ -43,7 +43,7 @@ def editor():
 @blueprint.route("/editor/<int:id>/")
 @login_required
 def edit(id):
-    return str(id)
+    return render_template("editor.html", user=g.user, prog_id=id)
 
 @blueprint.route("/delete/<int:id>")
 @login_required
