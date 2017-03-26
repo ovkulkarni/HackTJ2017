@@ -43,6 +43,10 @@ var conditional_types = {
     }
 };
 
+var if_operations = [
+    {'in': "contains"}, {'gt': "is greater than"}, {'lt': "is less than"}
+];
+
 var colors = {
     "conditional": { // orange
         fg: "#FF9800",
@@ -80,7 +84,7 @@ function genOptionString(block, gen_type, type) {
     }
     var ret = "";
     type_var[type].outputs.forEach(function(output) {
-        ret += "<option value='"+output+"'>"+output+"</option>";
+        ret += "<option value='"+output+"'>"+block.name + ":" +output+"</option>";
     });
     return ret;
 }
@@ -107,10 +111,17 @@ function openInformation(block) {
         });
         $("#conditional-modal .modal-body").html(inner_html);
     } else if(block.automate_general_type == "conditional") {
+        $op1 = $bod.append("<div class='operand1'><select></select></div>").find(".operand1 select");
+        $oper = $bod.append("<div class='operation'><select></select></div>").find(".operation select");
+        $op2 = $bod.append("<div class='operand2'><select></select></div>").find(".operand2 select");
         block.connectionsFrom.forEach(function(from) {
-            $bod.append("<div class='option'><p>" + from.name + "</p><select>" +
-                genOptionString(from, from.automate_general_type, from.automate_type) + "</select>"
-            );
+            $op1.append(genOptionString(from, from.automate_general_type, from.automate_type));
+            $op2.append(genOptionString(from, from.automate_general_type, from.automate_type));
+        });
+        if_operations.forEach(function(oper) {
+            Object.keys(oper).forEach(function(op) {
+                $oper.append("<option value='"+op+"'>"+oper[op]+"</option>");
+            });
         });
     }
     $("#conditional-modal").modal();

@@ -1,5 +1,10 @@
 {% extends "base-nav.html" %}
 
+{% block js %}
+    {{ super() }}
+    <script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+{% endblock %}
+
 {% block css %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
