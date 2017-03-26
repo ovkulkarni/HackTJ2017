@@ -5,6 +5,7 @@ from users.models import User
 
 class Program(BaseModel):
     owner = ForeignKeyField(User)
+    name = CharField(null=True)
 
 class Trigger(BaseModel):
     trigger_type = CharField()

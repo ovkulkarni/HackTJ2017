@@ -32,7 +32,7 @@
             <span id="delete" class="tool"><i class="fa fa-fw fa-trash-o"></i></span>
             <span id="filter" class="tool pull-right"><i class="fa fa-fw fa-filter"></i></span>
             <hr />
-            <button id="save" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save</button>
+            <input type="text" id="name" placeholder="Name" style="max-width: 150px; display: inline-block; border-radius: 25px" value="{{ name|default('') }}" class="form-control" /> <button id="save" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save</button>
         </div>
         <i class="fa fa-times close-icon" id="picker-close"></i>
     </div>

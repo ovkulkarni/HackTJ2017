@@ -51,7 +51,8 @@ def editor():
 @blueprint.route("/editor/<int:id>/")
 @login_required
 def edit(id):
-    return render_template("editor.html", user=g.user, prog_id=id)
+    p = Program.get(Program.id == id)
+    return render_template("editor.html", user=g.user, prog_id=id, name=p.name or "")
 
 @blueprint.route("/delete/<int:id>/")
 @login_required
@@ -69,7 +70,7 @@ def delete(id):
 @login_required
 def save():
     prgrm = json.loads(request.form.get("program"))
-    p = Program.create(owner=g.user)
+    p = Program.create(owner=g.user, name=request.form.get("name", None))
     process_program(prgrm, p)
     return jsonify({"success": True})
 

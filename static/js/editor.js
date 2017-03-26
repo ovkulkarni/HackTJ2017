@@ -429,7 +429,7 @@ function serialize_and_save() {
     }
     var out = serialize();
     if (out) {
-        $.post(save_endpoint, { program: JSON.stringify(out) }, function(data) {
+        $.post(save_endpoint, { program: JSON.stringify(out), name: $("#name").val() }, function(data) {
             Messenger().success("Program saved!");
         });
     }
