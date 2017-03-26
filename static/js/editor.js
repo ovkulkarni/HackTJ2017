@@ -182,9 +182,10 @@ function openInformation(block) {
         $(".save-modal").attr("data-id", block.id);
     } else if(block.automate_general_type == "conditional") {
         if (block.automate_type == "if") {
-            $op1 = $bod.append("<div class='operand1 form-group'><select id='id_left' class='form-control'></select></div>").find(".operand1 select");
-            $oper = $bod.append("<div class='operation form-group'><select id='id_operation' class='form-control'></select></div>").find(".operation select");
-            $op2 = $bod.append("<div class='operand2 form-group'><select id='id_right' class='form-control'></select></div>").find(".operand2 select");
+            $op1 = $bod.append("<div class='operand1 form-group'><input type='text' placeholder='Operand 1' class='form-control'></div>").find(".operand1 input");
+            $oper = $bod.append("<div class='operation form-group'><select class='form-control'></select></div>").find(".operation select");
+            $op2 = $bod.append("<div class='operand2 form-group'><input type='text' placeholder='Operand 2' class='form-control'></div>").find(".operand2 input");
+            /* Used for drop downs
             var append = function(blk) {
                 blk.connectionsFrom.forEach(function(from) {
                     append(from);
@@ -192,9 +193,11 @@ function openInformation(block) {
                 $op1.append(genOptionString(blk, blk.automate_general_type, blk.automate_type));
                 $op2.append(genOptionString(blk, blk.automate_general_type, blk.automate_type));
             };
+            $other = "<option value='other'>Other</option>"
             block.connectionsFrom.forEach(function(from) {
                 append(from);
             });
+            */
             if_operations.forEach(function(oper) {
                 Object.keys(oper).forEach(function(op) {
                     $oper.append("<option value='" + op + "'>" + oper[op] + "</option>");
