@@ -65,7 +65,25 @@
         line.to = b;
         a.connections.push(line);
         b.connections.push(line);
+        recalculateConnection(line);
         canvas.add(line);
+    }
+
+    function recalculateConnection(v) {
+        v.left = v.from.left + v.from.width / 2;
+        v.top = v.from.top + v.from.height / 2;
+        v.width = (v.to.left + v.to.width / 2) - v.left;
+        if (v.width < 0) {
+            v.left += v.width;
+        }
+        v.set("flipX", v.width < 0);
+        v.width = Math.abs(v.width);
+        v.height = (v.to.top + v.to.height / 2) - v.top;
+        if (v.height < 0) {
+            v.top += v.height;
+        }
+        v.set("flipY", v.height < 0);
+        v.height = Math.abs(v.height);
     }
 
     $(document).ready(function() {
@@ -73,21 +91,7 @@
         canvas.on("object:moving", function(e) {
             if (e.target.type == "block") {
                 $.each(e.target.connections, function(k, v) {
-                    v.left = v.from.left + v.from.width / 2;
-                    v.top = v.from.top + v.from.height / 2;
-                    v.width = (v.to.left + v.to.width / 2) - v.left;
-                    if (v.width < 0) {
-                        v.left += v.width;
-                    }
-                    v.set("flipX", v.width < 0);
-                    v.width = Math.abs(v.width);
-                    v.height = (v.to.top + v.to.height / 2) - v.top;
-                    if (v.height < 0) {
-                        v.top += v.height;
-                    }
-                    v.set("flipY", v.height < 0);
-                    v.height = Math.abs(v.height);
-                    console.log(v);
+                    recalculateConnection(v);
                 });
             }
         });
