@@ -229,6 +229,9 @@ function openInformation(block) {
         Object.keys(current_types[block.automate_type].inputs).forEach(function(input) {
             block.inputs[input] = $("#id_" + input).val();
         });
+        block.inputs["left"] = $bod.find('.operand1 input').val();
+        block.inputs["operation"] = $bod.find('.operation select').val();
+        block.inputs["right"] = $bod.find('.operand2 input').val();
         $("#conditional-modal").modal("hide");
     });
 };
