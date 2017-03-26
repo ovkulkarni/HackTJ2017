@@ -17,3 +17,9 @@ def index():
     if g.user is None:
         return redirect(url_for("users.login"))
     return render_template("index.html")
+
+@app.route("/editor/")
+def editor():
+    if g.user is None:
+        return redirect(url_for("users.login"))
+    return render_template("editor.html")

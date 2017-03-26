@@ -39,14 +39,14 @@ def register():
         confirm = request.form.get("confirm", None)
         if not name or not email or not password:
             flash("Please fill out all of the fields!", "error")
-            return redirect(url_for(".register"))
+            return redirect(url_for("users.register"))
         if password != confirm:
             flash("Confirmation does not match password!", "error")
-            return redirect(url_for(".register"))
+            return redirect(url_for("users.register"))
         try:
             u = User.get(User.email == email)
             flash("An account with this email already exists!", "error")
-            return redirect(url_for(".login"))
+            return redirect(url_for("users.login"))
         except User.DoesNotExist:
             pass
         u = User.create(name=name, email=email, password=password)
