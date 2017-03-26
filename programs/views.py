@@ -75,7 +75,7 @@ def process_program(prgrm, p):
         l = Link.create(source=db_blocks[i], destination=db_blocks[i+1])
     return db_blocks[0]
 
-def process_value(val, all_blocks=[])
+def process_value(val, all_blocks=[]):
     match = matcher.match(val)
     if match:
         new_val = match.group(1)
