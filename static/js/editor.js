@@ -209,8 +209,8 @@ function openInformation(block) {
                 var item = $('<div class="form-group"><div class="input-group"><input id="id_' + input + '" name="' + input + '" type="text" class="form-control" placeholder="' + details.name + '" value="' + curr_val + '" /></div></div>');
                 $("#conditional-modal .modal-body").append(item);
             });
-            $(".save-modal").attr("data-id", block.id);
         }
+        $(".save-modal").attr("data-id", block.id);
     }
     $("#conditional-modal").modal();
     $("#conditional-modal .save-modal").off("click").click(function(){
@@ -420,13 +420,15 @@ function block_serialize(b) {
 function recur_serialize(b) {
     var next = b.connectionsTo;
     var out = [block_serialize(b)];
+    var prev = b;
     while (next.length == 1) {
+        prev = next;
         next = next[0];
         out.push(block_serialize(next));
         next = next.connectionsTo;
     }
     if (next.length == 2) {
-        out.push({ inner: recur_serialize(next[0]), outer: recur_serialize(next[1]) });
+        out.push({ inner: recur_serialize(next[0]), outer: recur_serialize(next[1]), values: prev.inputs });
     }
     return out;
 }
