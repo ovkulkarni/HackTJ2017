@@ -73,13 +73,15 @@ def formatted_args(block, all_blocks=None):
                         val_block = b
             get_val = new_val.split(".")[1]
             val = re.sub("{{.*}}", "{" + "id_{}[{}]".format(val_block.id, get_val)+ "}", val)
-        args += "('{}', '{}', '{}')".format(val, key, ARGS_MAPPINGS[block["name"]][key])
+        args += "('{}', '{}', '{}'), ".format(val, key, ARGS_MAPPINGS[block["name"]][key])
+    args = args[:-2]
     args += "]"
     return args
 
 def formatted_results(block):
     results = "["
     for key in RESULTS_MAPPINGS[block["name"]]:
-        results += "('{}', '{}')".format(key, RESULTS_MAPPINGS[block["name"]][key])
+        results += "('{}', '{}'), ".format(key, RESULTS_MAPPINGS[block["name"]][key])
+    results = results[:-2]
     results += "]"
     return results
