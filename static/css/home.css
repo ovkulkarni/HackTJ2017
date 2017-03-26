@@ -2,17 +2,27 @@ input[type='password'], input[type='text'] {
     border-radius: 50px;
 }
 
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+
 html, body {
-    background-color: #404040;
+    background-color: #111111;
 }
 
 .main {
     border-radius: 10px;
-    border: 4px solid #ffffff;
-    border-top: 0;
-    margin-top: -10px;
-    background-color: #aaaaaa;
+    border: 2px solid #afafaf;
+    background-color: rgba(50,50,50,.01);
     padding-top: 20px;
+    margin-top: 100px;
+    color: #efefef;
     z-index: 0;
 }
 
