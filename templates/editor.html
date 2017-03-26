@@ -249,6 +249,9 @@
                         prevBlock = obj;
                     }
                 }
+                else if ($("#delete.active").length) {
+                    deleteSelected();
+                }
             }
         });
         canvas.on("object:removed", function(e) {
@@ -275,32 +278,35 @@
             canvas.setWidth(width);
             canvas.setHeight(height);
         });
+        function deleteSelected() {
+            var group = canvas.getActiveGroup();
+            if (group) {
+                $.each(group._objects, function(k, v) {
+                    if (v.type == "block") {
+                        try {
+                            canvas.remove(v);
+                            $.each(v.connections, function(kt, vt) {
+                                try {
+                                    canvas.remove(vt);
+                                } catch (e) {  }
+                            });
+                        }
+                        catch (e) { }
+                        blocks.splice(blocks.indexOf(v), 1);
+                    }
+                });
+            }
+            else {
+                var obj = canvas.getActiveObject();
+                canvas.remove(obj);
+                if (obj == "block") {
+                    blocks.splice(blocks.indexOf(obj), 1);
+                }
+            }
+        }
         $(window).on("keydown", function(e) {
             if (e.keyCode == 46) {
-                var group = canvas.getActiveGroup();
-                if (group) {
-                    $.each(group._objects, function(k, v) {
-                        if (v.type == "block") {
-                            try {
-                                canvas.remove(v);
-                                $.each(v.connections, function(kt, vt) {
-                                    try {
-                                        canvas.remove(vt);
-                                    } catch (e) {  }
-                                });
-                            }
-                            catch (e) { }
-                            blocks.splice(blocks.indexOf(v), 1);
-                        }
-                    });
-                }
-                else {
-                    var obj = canvas.getActiveObject();
-                    canvas.remove(obj);
-                    if (obj == "block") {
-                        blocks.splice(blocks.indexOf(obj), 1);
-                    }
-                }
+                deleteSelected();
             }
         });
         $(window).resize();
@@ -354,6 +360,7 @@
             <hr />
             <span id="default" class="tool active"><i class="fa fa-fw fa-mouse-pointer"></i></span>
             <span id="arrow" class="tool"><i class="fa fa-fw fa-expand"></i></span>
+            <span id="delete" class="tool"><i class="fa fa-fw fa-trash-o"></i></span>
         </div>
         <i class="fa fa-times close-icon" id="picker-close"></i>
     </div>
