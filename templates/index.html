@@ -21,10 +21,21 @@
             <a href="{{ url_for('programs.editor') }}" class="btn btn-primary">Start a program!</a>
         </div>
     {% else %}
-        {% for prog in user.programs %}
-            <div class="program col-sm-6">
-                {{ prog.name }}
+        <div class="row">
+            <!--div class="program col-sm-5">
+                <h4>Meme1<h4>
             </div>
+            <div class="program empty col-sm-2"></div>
+            <div class="program col-sm-5">
+                <h4>Meme1<h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="program col-sm-5">
+                <h4>Meme1<h4>
+            </div>
+        </div-->
+        {% for prog in user.programs %}
         {% endfor %}
     {% endif %}
 </div>
