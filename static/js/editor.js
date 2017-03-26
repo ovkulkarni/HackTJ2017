@@ -246,6 +246,34 @@ function connectBlocks(a, b) {
     return line;
 }
 
+function serialize() {
+    var starting_block = null;
+    $.each(blocks, function(k, v) {
+        if (v.automate_general_type == "trigger") {
+            starting_block = v;
+            return false;
+        }
+    });
+    if (!starting_block) {
+        return false;
+    }
+    return recur_serialize(starting_block);
+}
+
+function recur_serialize(b) {
+    var next = b.connectionsTo;
+    var out = [b];
+    while (next.length == 1) {
+        next = next[0];
+        out.push(next);
+        next = next.connectionsTo;
+    }
+    if (next.length == 2) {
+        out.push({ inner: recur_serialize(next[0]), outer: recur_serialize(next[1]) });
+    }
+    return out;
+}
+
 function recalculateConnection(v) {
     var angle = Math.atan2(v.from.top - v.to.top, v.to.left - v.from.left)*180/Math.PI;
     var fPos = "bottom";
@@ -356,7 +384,27 @@ $(document).ready(function() {
             canvas.deactivateAll();
         }
         if (e.target.type == "line") {
-            canvas.remove(e.target.triangle);
+            try {
+                var fi = e.target.from.connections.indexOf(e.target);
+                if (fi != -1) {
+                    e.target.from.connections.splice(fi, 1);
+                }
+                fi = e.target.from.connectionsTo.indexOf(e.target);
+                if (fi != -1) {
+                    e.target.from.connectionsTo.splice(fi, 1);
+                }
+                var ti = e.target.to.connections.indexOf(e.target);
+                if (ti != -1) {
+                    e.target.to.connections.splice(ti, 1);
+                }
+                ti = e.target.to.connectionsFrom.indexOf(e.target);
+                if (ti != -1) {
+                    e.target.to.connectionsFrom.splice(ti, 1);
+                }
+            }
+            finally {
+                canvas.remove(e.target.triangle);
+            }
         }
     });
     $(window).on("resize", function() {
@@ -381,6 +429,9 @@ $(document).ready(function() {
                     }
                     catch (e) { }
                     delete blocks[v.id];
+                }
+                if (v.type == "line") {
+                    canvas.remove(v);
                 }
             });
         }
