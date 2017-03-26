@@ -20,18 +20,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.7.9/fabric.min.js" integrity="sha256-D5qjlhHft5LNta9Zzei8iPWEAGyIQt6JkWftlBA81yk=" crossorigin="anonymous"></script>
     <script>
     var canvas;
+    var blockSize = 100;
 
     function addBlock(name) {
         var rect = new fabric.Rect({
             fill: "#2196F3",
-            width: 100,
-            height: 100
+            width: blockSize,
+            height: blockSize
         });
         rect.stroke = "#1565C0";
         rect.strokeWidth = 1;
         var text = new fabric.Text(name, {
-            left: 50,
-            top: 50,
+            left: blockSize / 2,
+            top: blockSize / 2,
             fontSize: 16,
             textAlign: "center",
             originX: "center",
@@ -39,8 +40,8 @@
             fontFamily: "sans-serif"
         });
         var block = new fabric.Group([rect, text], {
-            left: $(window).width() / 2 - 50,
-            top: $(window).height() / 2 - 50 - $("nav").height(),
+            left: $(window).width() / 2 - blockSize / 2,
+            top: $(window).height() / 2 - blockSize / 2 - $("nav").height(),
             lockRotation: true,
             lockScalingX: true,
             lockScalingY: true,
@@ -70,15 +71,55 @@
     }
 
     function recalculateConnection(v) {
+        var angle = Math.atan2(v.from.top - v.to.top, v.to.left - v.from.left)*180/Math.PI;
+        console.log(angle);
+        var fPos = "bottom";
+        var tPos = "top";
+        if (angle >= -45 && angle <= 45) {
+            fPos = "right";
+            tPos = "left";
+        }
+        else if (angle > 0 && angle <= 135) {
+            fPos = "top";
+            tPos = "bottom";
+        }
+        else if (Math.abs(angle) > 135) {
+            fPos = "left";
+            tPos = "right";
+        }
         v.left = v.from.left + v.from.width / 2;
         v.top = v.from.top + v.from.height / 2;
         v.width = (v.to.left + v.to.width / 2) - v.left;
+        v.set("flipX", v.width < 0);
+        if (fPos == "left") {
+            v.left += blockSize / 2;
+        }
+        if (fPos == "right") {
+            v.left += blockSize / 2;
+        }
+        if (fPos == "top") {
+            v.top -= blockSize / 2;
+        }
+        if (fPos == "bottom") {
+            v.top += blockSize / 2;
+        }
         if (v.width < 0) {
             v.left += v.width;
         }
-        v.set("flipX", v.width < 0);
         v.width = Math.abs(v.width);
         v.height = (v.to.top + v.to.height / 2) - v.top;
+        if (tPos == "left") {
+            v.width -= blockSize;
+        }
+        if (tPos == "right") {
+            v.width -= blockSize;
+        }
+        if (tPos == "top") {
+            v.height -= blockSize / 2;
+        }
+        if (tPos == "bottom") {
+            v.height += blockSize / 2;
+        }
         if (v.height < 0) {
             v.top += v.height;
         }
