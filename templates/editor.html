@@ -12,14 +12,17 @@
         background-image: linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent);
         background-size: 50px 50px;
     }
-    #arrow .fa {
+    .tool .fa {
         font-size: 24px;
         color: white;
         background-color: black;
         border: 3px solid transparent;
         padding: 3px;
+        cursor: pointer;
+        width: 35px;
+        height: 35px;
     }
-    #arrow.active .fa {
+    .tool.active .fa {
         color: black;
         background-color: white;
         border: 3px solid #666;
@@ -80,6 +83,9 @@
     }
 
     function connectBlocks(a, b) {
+        if (a == b) {
+            return;
+        }
         var line = new fabric.Line([0, 0, 1, 1], {
             stroke: "red",
             strokeWidth: 2,
@@ -189,7 +195,7 @@
             var time = new Date().getTime() - lastClick.getTime();
             if (time < 100) {
                 var obj = canvas.getActiveObject();
-                if (obj && obj.type == "block") {
+                if (obj && obj.type == "block" && $("#arrow.active").length) {
                     if (prevBlock) {
                         connectBlocks(prevBlock, obj);
                         prevBlock = null;
@@ -232,6 +238,11 @@
                         if (v.type == "block") {
                             try {
                                 canvas.remove(v);
+                                $.each(v.connections, function(kt, vt) {
+                                    try {
+                                        canvas.remove(vt);
+                                    } catch (e) {  }
+                                });
                             }
                             catch (e) { }
                             blocks.splice(blocks.indexOf(v), 1);
@@ -263,8 +274,9 @@
                 addBlock(el.innerHTML, "conditional");
             };
         });
-        $("#arrow").click(function() {
-            $(this).toggleClass("active");
+        $(".tool").click(function() {
+            $(".tool").removeClass("active");
+            $(this).addClass("active");
         });
     });
     </script>
@@ -291,7 +303,8 @@
                 <div class="else">Else</div>
             </div>
             <hr />
-            <div id="arrow"><i class="fa fa-expand"></i></div>
+            <span id="default" class="tool active"><i class="fa fa-fw fa-mouse-pointer"></i></span>
+            <span id="arrow" class="tool"><i class="fa fa-fw fa-expand"></i></span>
         </div>
         <div id="picker-arrow">
         </div>
