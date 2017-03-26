@@ -13,6 +13,7 @@
         background-size: 50px 50px;
     }
     </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/editor.css') }}">
 {% endblock %}
 
 {% block js %}
@@ -22,9 +23,9 @@
     var canvas;
     var blockSize = 100;
 
-    function addBlock(name) {
+    function addBlock(name, type) {
         var rect = new fabric.Rect({
-            fill: "#2196F3",
+            fill: type == "trigger" ? "#2196F3" : "#EE4560",
             width: blockSize,
             height: blockSize
         });
@@ -161,10 +162,37 @@
             }
         });
         $(window).resize();
+        $("#triggers div").each(function(i,el) {
+            el.onclick = function() {
+                addBlock(el.innerHTML, "trigger");
+            };
+        });
+        $("#events div").each(function(i,el) {
+            el.onclick = function() {
+                addBlock(el.innerHTML, "event");
+            };
+        });
     });
     </script>
 {% endblock %}
 
 {% block content %}
-<canvas id="editor"></canvas>
+    <div id="picker">
+        <div id="picker-list">
+            <h3>Triggers</h3>
+            <div id="triggers">
+                <div class="buy">Buy</div>
+                <div class="time">Time</div>
+                <div class="where">Where</div>
+            </div>
+            <h3>Events</h3>
+            <div id="events">
+                <div class="call">Call</div>
+                <div class="text">Text</div>
+            </div>
+        </div>
+        <div id="picker-arrow">
+        </div>
+    </div>
+    <canvas id="editor"></canvas>
 {% endblock %}
