@@ -430,20 +430,22 @@ $(document).ready(function() {
         lastClick = new Date();
     });
     canvas.on("mouse:up", function(e) {
-        var time = new Date().getTime() - lastClick.getTime();
-        if (time < 100) {
-            var obj = canvas.getActiveObject();
-            if (obj && obj.type == "block" && $("#arrow.active").length) {
-                if (prevBlock) {
-                    connectBlocks(prevBlock, obj);
-                    prevBlock = null;
+        if (lastClick) {
+            var time = new Date().getTime() - lastClick.getTime();
+            if (time < 100) {
+                var obj = canvas.getActiveObject();
+                if (obj && obj.type == "block" && $("#arrow.active").length) {
+                    if (prevBlock) {
+                        connectBlocks(prevBlock, obj);
+                        prevBlock = null;
+                    }
+                    else {
+                        prevBlock = obj;
+                    }
                 }
-                else {
-                    prevBlock = obj;
+                else if ($("#delete.active").length) {
+                    deleteSelected();
                 }
-            }
-            else if ($("#delete.active").length) {
-                deleteSelected();
             }
         }
     });
