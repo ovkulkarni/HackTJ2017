@@ -95,7 +95,7 @@ def process_value(val, all_blocks=[]):
 def formatted_args(block, all_blocks=[]):
     args = "["
     for key in ARGS_MAPPINGS[block["name"]]:
-        args += "('{}', '{}', '{}'), ".format(process_value(val, all_blocks), key, ARGS_MAPPINGS[block["name"]][key])
+        args += "('{}', '{}', '{}'), ".format(process_value(block["values"][key], all_blocks), key, ARGS_MAPPINGS[block["name"]][key])
     args = args[:-2]
     args += "]"
     return args
