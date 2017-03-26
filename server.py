@@ -3,6 +3,7 @@ from executor.triggers.utils import parse_trigger_args, parse_trigger_results, T
 from executor.events.Twilio import SendSMSEvent 
 from executor.events.utils import parse_event_args, EventBlock
 from executor.conditions.utils import ConditionBlock
+from executor.loops.utils import LoopBlock, ForLoop, parse_loop_type, WhileLoop
 from db import db
 from programs.models import *
 
@@ -36,9 +37,22 @@ async def call_conditional(cond, context):
     if res:
         if cond.next_inner is not None:
             loop.create_task(exec_block(cond.next_inner, context))
+        return True
     else:
         if cond.next_outer is not None:
             loop.create_task(exec_block(cond.next_outer, context))
+        return False
+
+async def call_loop(loop, context):
+    loop.reset()
+    context['id_{}'.format(loop.block_id)] = {}
+    context['id_{}'.format(loop.block_id)]['variable'] = loop.variable
+
+    while (await call_conditional(loop.condition, context)):
+        print(loop.variable)
+        print(context)
+        loop.increment()
+        context['id_{}'.format(loop.block_id)]['variable'] = loop.variable
 
 async def stop():
     return
@@ -52,6 +66,8 @@ def exec_block(bl, context):
         return call_event(bl, context)
     elif isinstance(bl, StopBlock):
         return stop()
+    elif isinstance(bl, LoopBlock):
+        return call_loop(bl, context)
 
 async def call_trigger(tr):
     await tr.call({})
@@ -104,6 +120,7 @@ def parse_block(bl):
         cond.in_val = bl.condition.in_val
         cond.out_val = bl.condition.out_val
         cond.check = bl.condition.check
+        cond.block_id = bl.id
         condition_links = bl.condition.conditionlink_set
         if len(condition_links) > 0:
             cond.next_inner = parse_block(condition_links[0].inner)
@@ -113,6 +130,12 @@ def parse_block(bl):
 
     elif bl.block_type == 's':
         retb = StopBlock()
+
+    elif bl.block_type == 'l':
+        loop = parse_loop_type(bl.loop.loop_type)
+        loop.condition = parse_block(bl.loop.condition.block_set[0])
+        loop.block_id = bl.id
+        retb = loop
 
 
     if bl.block_type != 'c':
