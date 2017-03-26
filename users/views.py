@@ -63,6 +63,10 @@ def logout():
     session["logged_in"] = False
     return redirect(url_for("index"))
 
+@blueprint.route("/settings", methods=["GET","POST"])
+def settings():
+    return render_template("settings.html", user=g.user)
+
 @blueprint.before_app_request
 def set_user():
     g.user = get_current_user()

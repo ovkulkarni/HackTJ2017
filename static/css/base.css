@@ -61,3 +61,7 @@ nav.navbar-dark a.navbar-brand:hover {
     font-size: 28px;
     content: "\f0c9";
 }
+
+nav.navbar {
+    z-index: 1;
+}

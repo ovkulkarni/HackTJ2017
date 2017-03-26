@@ -16,4 +16,4 @@ init_blueprints(app)
 def index():
     if g.user is None:
         return redirect(url_for("users.login"))
-    return render_template("index.html")
+    return render_template("index.html", user=g.user)

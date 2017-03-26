@@ -7,4 +7,4 @@ blueprint = Blueprint("programs", __name__, url_prefix="/program")
 @blueprint.route("/editor/")
 @login_required
 def editor():
-    return render_template("editor.html")
+    return render_template("editor.html", user=g.user)
