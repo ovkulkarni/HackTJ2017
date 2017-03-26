@@ -570,6 +570,9 @@ $(document).ready(function() {
             if (a) {
                 load(a);
             }
+            else {
+                Messenger().error("You have an invalid program! Make sure you have a trigger block.");
+            }
         }
         else {
             $(".tool").removeClass("active");
