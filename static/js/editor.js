@@ -432,14 +432,15 @@ function recur_serialize(b) {
     var next = b.connectionsTo;
     var out = [block_serialize(b)];
     var prev = b;
-    while (next.length == 1) {
-        prev = next;
+    while (next.length > 0) {
         next = next[0];
+        if (next.automate_general_type == "conditional") {
+            out.push({ name: prev.name, type: "conditional", inner: recur_serialize(next.connectionsTo[0]), outer: recur_serialize(next.connectionsTo[1]), values: prev.inputs });
+            continue;
+        }
+        prev = next;
         out.push(block_serialize(next));
         next = next.connectionsTo;
-    }
-    if (next.length == 2) {
-        out.push({ inner: recur_serialize(next[0]), outer: recur_serialize(next[1]), values: prev.inputs });
     }
     return out;
 }
@@ -616,7 +617,10 @@ $(document).ready(function() {
                 delete blocks[obj.id];
             }
         }
-        $("#conditional-modal").modal("hide");
+        try {
+            $("#conditional-modal").modal("hide");
+        }
+        catch (e) {}
     }
     $(window).on("keydown", function(e) {
         if (e.keyCode == 46) {
