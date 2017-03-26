@@ -277,6 +277,10 @@
         $(".tool").click(function() {
             $(".tool").removeClass("active");
             $(this).addClass("active");
+        }
+
+        $("#picker-close").click(function(el) {
+            $("#picker").toggleClass("closed");
         });
     });
     </script>
@@ -306,8 +310,7 @@
             <span id="default" class="tool active"><i class="fa fa-fw fa-mouse-pointer"></i></span>
             <span id="arrow" class="tool"><i class="fa fa-fw fa-expand"></i></span>
         </div>
-        <div id="picker-arrow">
-        </div>
+        <i class="fa fa-times close-icon" id="picker-close"></i>
     </div>
     <canvas id="editor"></canvas>
 {% endblock %}
