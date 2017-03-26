@@ -69,12 +69,11 @@ def delete(id):
 @login_required
 def save():
     prgrm = json.loads(request.form.get("program"))
-    print(prgrm)
     p = Program.create(owner=g.user)
     process_program(prgrm, p)
     return jsonify({"success": True})
 
-def process_program(prgrm, p):
+def process_program(prgrm, p, old_blocks=[]):
     db_blocks = []
     for block in prgrm:
         if block["type"] == "trigger":
@@ -82,18 +81,18 @@ def process_program(prgrm, p):
             b = Block.create(program=p, block_type="t", trigger=t)
             db_blocks.append(b)
         elif block["type"] == "event":
-            e = Event.create(args=formatted_args(block, db_blocks), action=block["name"])
+            e = Event.create(args=formatted_args(block, db_blocks + old_blocks), action=block["name"])
             b = Block.create(program=p, block_type="e", event=e)
             db_blocks.append(b)
         elif block["type"] == "conditional":
-            in_args = process_value(block["values"]["left"], db_blocks)
-            check = block["values"]["operator"]
-            out_args = process_value(block["values"]["right"], db_blocks)
+            in_args = process_value(block["values"]["left"], db_blocks + old_blocks)
+            check = block["values"]["operation"]
+            out_args = process_value(block["values"]["right"], db_blocks + old_blocks)
             c = Condition.create(in_val=in_args, check=check, out_val=out_args)
             b = Block.create(program=p, block_type="c", condition=c)
-            inner_b = process_program(block["inner"], p)
-            outer_b = process_program(block["outer"], p)
-            cl = ConditionalLink.create(condition=c, inner=inner_b, outer=outer_b)
+            inner_b = process_program(block["inner"], p, db_blocks)
+            outer_b = process_program(block["outer"], p, db_blocks)
+            cl = ConditionLink.create(source=c, inner=inner_b, outer=outer_b)
             db_blocks.append(b)
     for i, val in enumerate(db_blocks[:-1]):
         l = Link.create(source=db_blocks[i], destination=db_blocks[i+1])
