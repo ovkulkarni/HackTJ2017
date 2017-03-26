@@ -45,6 +45,14 @@ def editor():
 def edit(id):
     return str(id)
 
+@blueprint.route("/delete/<int:id>")
+@login_required
+def delete(id):
+    p = Program.get(Programs.id == id)
+    if(g.user == p.owner):
+        p.delete()
+    return render_template("index.html", user=g.user)
+
 
 @blueprint.route("/save/", methods=["POST"])
 @login_required

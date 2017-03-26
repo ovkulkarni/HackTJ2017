@@ -15,28 +15,21 @@
 <div id="particles-js"></div>
 <h3>Your Programs</h3>
 <div id="home" class="container main">
-    {% if not user.programs %}
+    {% if not programs %}
         <div class="noprog">
             <h5>It looks like you haven't made any programs yet</h5>
             <a href="{{ url_for('programs.editor') }}" class="btn btn-primary">Start a program!</a>
         </div>
     {% else %}
         <div class="row">
-            <!--div class="program col-sm-5">
-                <h4>Meme1<h4>
-            </div>
-            <div class="program empty col-sm-2"></div>
+        {% for prog in programs %}
             <div class="program col-sm-5">
-                <h4>Meme1<h4>
+                <h4>Program {{ loop.index }}<h4>
+                <a href="{{ url_for('programs.edit', id=prog.id) }} " class="btn btn-primary">Edit</a>
+                <a href="{{ url_for('programs.delete', id=prog.id) }} " class="btn btn-danger">Delete</a>
             </div>
-        </div>
-        <div class="row">
-            <div class="program col-sm-5">
-                <h4>Meme1<h4>
-            </div>
-        </div-->
-        {% for prog in user.programs %}
         {% endfor %}
+        </div>
     {% endif %}
 </div>
 {% endblock %}
