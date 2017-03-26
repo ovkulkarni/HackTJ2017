@@ -2,7 +2,10 @@ import asyncio
 import ast
 
 
-class PassiveTrigger:
+class Trigger:
+    pass
+
+class PassiveTrigger(Trigger):
     _results = asyncio.Queue()
     next_ = None
     block_id = None
@@ -18,10 +21,10 @@ class PassiveTrigger:
         for a in args:
             real_args.append(a.value)
 
-        await self.run_init(*real_args)
+        return await self.run_init(*real_args)
 
     async def call(self, context):
-        await self.run_call()
+        return await self.run_call()
 
 class Result:
     pass

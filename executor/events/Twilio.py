@@ -1,4 +1,4 @@
-from .utils import Event, StringArg
+from .utils import EventBlock, StringArg
 
 import asyncio
 import functools
@@ -10,7 +10,7 @@ TWILIO_AUTH_TOKEN = "b2f31d4728b2c6d932de5decea27dc2d"
 def get_client():
     return TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
-class SendSMSEvent(Event):
+class SendSMSEvent(EventBlock):
     _name = "SendSMS"
     _description = "Send SMS"
     _args = [StringArg("number"), StringArg("message")]

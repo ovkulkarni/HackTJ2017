@@ -1,7 +1,8 @@
 from executor.triggers.RSSTrigger import RSSTrigger
-from executor.triggers.utils import parse_trigger_args, parse_trigger_results
+from executor.triggers.utils import parse_trigger_args, parse_trigger_results, Trigger
 from executor.events.Twilio import SendSMSEvent 
-from executor.events.utils import parse_event_args
+from executor.events.utils import parse_event_args, EventBlock
+from executor.conditions.utils import ConditionBlock
 from db import db
 from programs.models import *
 
@@ -19,13 +20,38 @@ async def start():
     await monitor(triggers)
 
 async def call_event(ev, context):
+    print(ev)
+    print(context)
     res = await ev.call(context)
 
     if not res[0]:
         print("Event failed: {}".format(res[1]))
 
     if ev.next_ is not None:
-        loop.create_task(call_event(ev.next_, context))
+        loop.create_task(exec_block(ev.next_, context))
+
+async def call_conditional(cond, context):
+    res = cond.evaluate(context)
+    
+    if res:
+        if cond.next_inner is not None:
+            loop.create_task(exec_block(cond.next_inner, context))
+    else:
+        if cond.next_outer is not None:
+            loop.create_task(exec_block(cond.next_outer, context))
+
+async def stop():
+    return
+
+def exec_block(bl, context):
+    if isinstance(bl, ConditionBlock):
+        return call_conditional(bl, context)
+    elif isinstance(bl, Trigger):
+        return call_trigger(bl)
+    elif isinstance(bl, EventBlock):
+        return call_event(bl, context)
+    elif isinstance(bl, StopBlock):
+        return stop()
 
 async def call_trigger(tr):
     await tr.call({})
@@ -38,7 +64,7 @@ async def call_trigger(tr):
         context['id_{}'.format(tr.block_id)] = res[1]
 
         if tr.next_ is not None:
-            loop.create_task(call_event(tr.next_, context))
+            loop.create_task(exec_block(tr.next_, context))
 
 async def monitor(triggers):
     for trig in triggers:
@@ -52,6 +78,9 @@ def get_event(ev):
 
 def get_trigger(tr):
     return trigger_map[tr]()
+
+class StopBlock:
+    pass
 
 def parse_block(bl):
     if bl.block_type == 't':
@@ -70,10 +99,27 @@ def parse_block(bl):
         ev.block_id = bl.id
         retb = ev
 
-    source_links = bl.source_link
-    if len(source_links) > 0:
-        next_block = parse_block(source_links[0].destination)
-        retb.next_ = next_block
+    elif bl.block_type == 'c':
+        cond = ConditionBlock()
+        cond.in_val = bl.condition.in_val
+        cond.out_val = bl.condition.out_val
+        cond.check = bl.condition.check
+        condition_links = bl.condition.conditionlink_set
+        if len(condition_links) > 0:
+            cond.next_inner = parse_block(condition_links[0].inner)
+            cond.next_outer = parse_block(condition_links[0].outer)
+
+        retb = cond
+
+    elif bl.block_type == 's':
+        retb = StopBlock()
+
+
+    if bl.block_type != 'c':
+        source_links = bl.source_link
+        if len(source_links) > 0:
+            next_block = parse_block(source_links[0].destination)
+            retb.next_ = next_block
 
     return retb
 

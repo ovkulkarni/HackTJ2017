@@ -2,7 +2,7 @@ import asyncio
 import ast
 
 
-class Event:
+class EventBlock:
     next_ = None
     block_id = None
     def __init__(self):
