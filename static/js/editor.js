@@ -21,10 +21,12 @@ var trigger_types = {
     }
 };
 
-var action_types = {
+var event_types = {
     text: {
         inputs: [
             'phone', 'message'
+        ],
+        outputs: [
         ]
     }
 };
@@ -59,45 +61,33 @@ var colors = {
     }
 };
 
-function genOptionString(block, type, gen_type) {
+function genOptionString(block, gen_type, type) {
     var type_var = null;
     switch(gen_type) {
         case 'conditional':
             type_var = conditional_types;
             break;
         case 'trigger':
-            type_var = action_types;
+            type_var = trigger_types;
             break;
         case 'event':
             type_var = event_types;
             break;
     }
-    if(!type_var)
-        return "<option value='null'>Bad genOptionString arguments</option>"
-    if(type == 'to') {
-        /* stuff goes here */
-    } else if(type == 'from') {
-        /* stuff goes here */
-    } else {
+    if(!type_var) {
         return "<option value='null'>Bad genOptionString arguments</option>"
     }
+    var ret = "";
+    type_var[type].outputs.forEach(function(output) {
+        ret += "<option value='"+output+"'>"+output+"</option>";
+    });
+    return ret;
 }
 
 function openInformation(block) {
     var $bod = $("#conditional-modal .modal-body");
     $bod.html("");
-    $to = $bod.append("<div class='to'><h4>To:</h4></div>").find('.to');
-    $from = $bod.append("<hr><div class='from'><h4>From:</h4></div>").find('.from');
     console.log(block.connections);
-    block.connections.forEach(function(conn) {
-        if(block == conn.from) {
-            $to.append("<div class='option'><p>" + conn.to.name + "</p><select>" +
-                genOptionString(conn.to, 'to', block.automate_general_type) + "</select>"
-            );
-        } else {
-            $from.append("<p>" + conn.from.name + "</p>");
-        }
-    });
     if(block.automate_general_type == "trigger"){
         inner_html = "";
         trigger_types[block.automate_type].inputs.forEach(function(input){
@@ -107,8 +97,21 @@ function openInformation(block) {
             $(".save-modal").data("id", block.id)
         });
         $("#conditional-modal .modal-body").html(inner_html);
-    }
-    if(block.automate_general_type == "conditational") {
+    } else if(block.automate_general_type == "event"){
+        inner_html = "";
+        event_types[block.automate_type].inputs.forEach(function(input){
+            curr_val = "";
+            if(block.inputs[input]) curr_val = block.inputs[input];
+            inner_html += '<div class="form-group"><div class="input-group"><input id="id_' + input + '" name="' + input + '" type="text" class="form-control" placeholder="' + input + '" value="' + curr_val + '" /></div></div>'
+            $(".save-modal").data("id", block.id)
+        });
+        $("#conditional-modal .modal-body").html(inner_html);
+    } else if(block.automate_general_type == "conditional") {
+        block.connectionsFrom.forEach(function(from) {
+            $bod.append("<div class='option'><p>" + from.name + "</p><select>" +
+                genOptionString(from, from.automate_general_type, from.automate_type) + "</select>"
+            );
+        });
     }
     $("#conditional-modal").modal();
     $("#conditional-modal #save").click(function() {
@@ -160,7 +163,7 @@ function addBlock(name, type) {
     block.inputs = {}
     block.connections = [];
     block.connectionsTo = [];
-    blocks.connectionFrom = [];
+    block.connectionsFrom = [];
     block.mouseDownCoordinates = null;
     block.on('mousedown', function(e) {
         if($("#default.active").length)
@@ -380,7 +383,7 @@ $(document).ready(function() {
 
     type_div_map = {
         "#triggers": trigger_types,
-        "#events": action_types,
+        "#events": event_types,
         "#conditionals": conditional_types
     };
 
