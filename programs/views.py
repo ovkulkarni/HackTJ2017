@@ -59,7 +59,7 @@ def delete(id):
     p = Program.get(Program.id == id)
     if (g.user == p.owner):
         flash("Program deleted!", "success")
-        p.delete()
+        p.delete_instance()
     else:
         flash("You do not have permission to delete this program!", "error")
     return redirect(url_for("index"))
