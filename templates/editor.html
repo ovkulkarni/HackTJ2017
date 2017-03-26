@@ -170,10 +170,17 @@
         canvas.on("object:removed", function(e) {
             if (e.target.type == "block") {
                 $.each(e.target.connections, function(k, v) {
-                    canvas.remove(v);
-                    v.from.connections.splice(v.from.connections.indexOf(v), 1);
-                    v.to.connections.splice(v.to.connections.indexOf(v), 1);
+                    try {
+                        canvas.remove(v);
+                    }
+                    finally {
+                        v.from.connections.splice(v.from.connections.indexOf(v), 1);
+                        v.to.connections.splice(v.to.connections.indexOf(v), 1);
+                    }
                 });
+            }
+            if (e.target.type == "line") {
+                canvas.remove(e.target.triangle);
             }
         });
         var a = addBlock("block 1");
@@ -188,7 +195,20 @@
         });
         $(window).on("keydown", function(e) {
             if (e.keyCode == 46) {
-                canvas.remove(canvas.getActiveObject());
+                var group = canvas.getActiveGroup();
+                if (group) {
+                    $.each(group._objects, function(k, v) {
+                        if (v.type == "block") {
+                            try {
+                                canvas.remove(v);
+                            }
+                            catch (e) { }
+                        }
+                    });
+                }
+                else {
+                    canvas.remove(canvas.getActiveObject());
+                }
             }
         });
         $(window).resize();
