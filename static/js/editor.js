@@ -125,14 +125,14 @@ function openInformation(block) {
     if (block.automate_general_type == "conditional") {
         current_types = conditional_types;
     }
-    if(block.automate_general_type == "trigger" || block.automate_general_type == "event"){
+    if(block.automate_general_type == "trigger" || block.automate_general_type == "event") {
         inner_html = "";
         $.each(current_types[block.automate_type].inputs, function(input, details) {
             curr_val = "";
             if(block.inputs[input]) curr_val = block.inputs[input];
             inner_html += '<div class="form-group"><div class="input-group"><input id="id_' + input + '" name="' + input + '" type="text" class="form-control" placeholder="' + details.name + '" value="' + curr_val + '" /></div></div>'
-            $(".save-modal").data("id", block.id);
         });
+        $(".save-modal").attr("data-id", block.id);
         $("#conditional-modal .modal-body").html(inner_html);
     } else if(block.automate_general_type == "conditional") {
         $op1 = $bod.append("<div class='operand1'><select></select></div>").find(".operand1 select");
@@ -160,12 +160,10 @@ function openInformation(block) {
         $("#conditional-modal").modal('hide');
     });
     $(".save-modal").click(function(){
-        block = blocks[$(this).data("id")];
-        if(block.automate_general_type == "trigger"){
-            Object.keys(current_types[block.automate_type].inputs).forEach(function(input){
-                block.inputs[input] = $("#id_" + input).val();
-            });
-        }
+        block = blocks[$(this).attr("data-id")];
+        Object.keys(current_types[block.automate_type].inputs).forEach(function(input) {
+            block.inputs[input] = $("#id_" + input).val();
+        });
     });
 };
 
