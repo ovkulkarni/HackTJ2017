@@ -358,7 +358,10 @@ function recur_load(p, i, oX, oY) {
     var SoX = oX;
     var last = p;
     $.each(i.outer, function(k, v) {
-        if (v.name) {
+        if (v.inner || v.outer) {
+            recur_load(last, v, oX, oY);
+        }
+        else {
             var b = addBlock(v.name, v.type, true);
             b.inputs = v.values;
             b.left += oX * offset;
@@ -367,15 +370,15 @@ function recur_load(p, i, oX, oY) {
             connectBlocks(last, b);
             last = b;
         }
-        else {
-            recur_load(last, v, oX, oY);
-        }
     });
     oY++;
     SoX--;
     last = p;
     $.each(i.inner, function(k, v) {
-        if (v.name) {
+        if (v.inner || v.outer) {
+            recur_load(last, v, SoX + 1, oY);
+        }
+        else {
             var b = addBlock(v.name, v.type, true);
             b.inputs = v.values;
             b.left += SoX * offset;
@@ -383,9 +386,6 @@ function recur_load(p, i, oX, oY) {
             oX++;
             connectBlocks(last, b);
             last = b;
-        }
-        else {
-            recur_load(last, v, SoX + 1, oY);
         }
     });
 }
@@ -397,17 +397,15 @@ function load(pgrm) {
     var oY = 0;
     var last = false;
     $.each(pgrm, function(k, v) {
-        if (v.name) {
-            var b = addBlock(v.name, v.type, true);
-            b.inputs = v.values;
-            b.left += oX * offset;
-            oX++;
-            if (last) {
-                connectBlocks(last, b);
-            }
-            last = b;
+        var b = addBlock(v.name, v.type, true);
+        b.inputs = v.values;
+        b.left += oX * offset;
+        oX++;
+        if (last) {
+            connectBlocks(last, b);
         }
-        else {
+        last = b;
+        if (v.inner || v.outer) {
             recur_load(last, v, oX, oY);
         }
     });
@@ -432,18 +430,21 @@ function block_serialize(b) {
 }
 
 function recur_serialize(b) {
-    var next = b.connectionsTo;
-    var out = [block_serialize(b)];
+    var out = [];
+    var next = b;
     var prev = b;
-    while (next.length > 0) {
-        next = next[0];
+    while (true) {
         if (next.automate_general_type == "conditional") {
-            out.push({ name: prev.name, type: "conditional", inner: recur_serialize(next.connectionsTo[0]), outer: recur_serialize(next.connectionsTo[1]), values: prev.inputs });
-            continue;
+            out.push({ name: next.name, type: "conditional", inner: recur_serialize(next.connectionsTo[0]), outer: recur_serialize(next.connectionsTo[1]), values: prev.inputs });
+            break;
         }
         prev = next;
         out.push(block_serialize(next));
         next = next.connectionsTo;
+        if (!next.length) {
+            break;
+        }
+        next = next[0];
     }
     return out;
 }
