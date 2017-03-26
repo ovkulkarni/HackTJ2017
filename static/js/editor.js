@@ -98,12 +98,36 @@ function openInformation(block) {
             $from.append("<p>" + conn.from.name + "</p>");
         }
     });
+    if(block.automate_general_type == "trigger"){
+        inner_html = "";
+        if(block.automate_type == "rss"){
+            trigger_types.rss.inputs.forEach(function(input){
+                curr_val = "";
+                if(block.inputs[input]) curr_val = block.inputs[input];
+                inner_html += '<div class="form-group"><div class="input-group"><input id="id_' + input + '" name="' + input + '" type="text" class="form-control" placeholder="' + input + '" value="' + curr_val + '" /></div></div>'
+                $(".save-modal").data("id", block.id)
+            });
+            $("#conditional-modal .modal-body").html(inner_html)
+        }
+        else if(block.automate_type == "time"){
+        }
+    }
     if(block.automate_general_type == "conditational") {
     }
     $("#conditional-modal").modal();
     $("#conditional-modal #save").click(function() {
         // Serialize and send
         $("#conditional-modal").modal('hide');
+    });
+    $(".save-modal").click(function(){
+        block = blocks[$(this).data("id")];
+        if(block.automate_general_type == "trigger"){
+            trigger_types[block.automate_type].inputs.forEach(function(input){
+                block.inputs[input] = $("#id_" + input).val();
+                console.log(input);
+            });
+        }
+        console.log(block.inputs)
     });
 };
 
@@ -135,7 +159,9 @@ function addBlock(name, type) {
     block.type = "block";
     block.automate_general_type = type;
     block.automate_type = name;
+    block.id = blocks.length;
     block.name = name;
+    block.inputs = {}
     block.connections = [];
     block.mouseDownCoordinates = null;
     block.on('mousedown', function(e) {
