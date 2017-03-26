@@ -2,6 +2,44 @@ var canvas;
 var blocks = [];
 var blockSize = 100;
 
+var trigger_types = {
+    rss: {
+        inputs: [
+            'url'
+        ],
+        outputs: [
+            'url', 'title', 'text', 'time'
+        ]
+    },
+    time: {
+        inputs: [
+            'time'
+        ],
+        outputs: [
+            'time'
+        ]
+    }
+};
+
+var action_types = {
+    text: {
+        inputs: [
+            'phone', 'message'
+        ]
+    }
+};
+
+var conditional_types = {
+    'if': {
+        inputs: [
+            'invalue', 'operation', 'outvalue'
+        ],
+        outputs: [
+            'boolean'
+        ]
+    }
+};
+
 var colors = {
     "conditional": { // orange
         fg: "#FF9800",
@@ -21,8 +59,52 @@ var colors = {
     }
 };
 
+function genOptionString(block, type, gen_type) {
+    var type_var = null;
+    switch(gen_type) {
+        case 'conditional':
+            type_var = conditional_types;
+            break;
+        case 'trigger':
+            type_var = action_types;
+            break;
+        case 'event':
+            type_var = event_types;
+            break;
+    }
+    if(!type_var)
+        return "<option value='null'>Bad genOptionString arguments</option>"
+    if(type == 'to') {
+        /* stuff goes here */
+    } else if(type == 'from') {
+        /* stuff goes here */
+    } else {
+        return "<option value='null'>Bad genOptionString arguments</option>"
+    }
+}
+
 function openInformation(block) {
+    var $bod = $("#conditional-modal .modal-body");
+    $bod.html("");
+    $to = $bod.append("<div class='to'><h4>To:</h4></div>").find('.to');
+    $from = $bod.append("<hr><div class='from'><h4>From:</h4></div>").find('.from');
     console.log(block.connections);
+    block.connections.forEach(function(conn) {
+        if(block == conn.from) {
+            $to.append("<div class='option'><p>" + conn.to.name + "</p><select>"
+                genOptionString(conn.to, 'to', block.automate_general_type) + "</select>"
+            );
+        } else {
+            $from.append("<p>" + conn.from.name + "</p>");
+        }
+    });
+    if(block.automate_general_type == "conditational") {
+    }
+    $("#conditional-modal").modal();
+    $("#conditional-modal #save").click(function() {
+        // Serialize and send
+        $("#conditional-modal").modal('hide');
+    });
 };
 
 function addBlock(name, type) {
@@ -51,6 +133,9 @@ function addBlock(name, type) {
         lockUniScaling: true
     });
     block.type = "block";
+    block.automate_general_type = type;
+    block.automate_type = name;
+    block.name = name;
     block.connections = [];
     block.mouseDownCoordinates = null;
     block.on('mousedown', function(e) {
@@ -266,6 +351,21 @@ $(document).ready(function() {
         }
     });
     $(window).resize();
+
+    type_div_map = {
+        "#triggers": trigger_types,
+        "#events": action_types,
+        "#conditionals": conditional_types
+    };
+
+    Object.keys(type_div_map).forEach(function(key) {
+        types = Object.keys(type_div_map[key]);
+        types.forEach(function(t) {
+            console.log($(key));
+            $(key).append("<div class='"+t+"'>"+t+"</div>");
+        });
+    });
+
     $("#triggers div").each(function(i,el) {
         el.onclick = function() {
             addBlock(el.innerHTML, "trigger");
