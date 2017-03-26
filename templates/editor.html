@@ -84,6 +84,10 @@
         }
     };
 
+    function openInformation(block) {
+        console.log(block.connections);
+    };
+
     function addBlock(name, type) {
         var rect = new fabric.Rect({
             fill: colors[type || "none"].fg,
@@ -111,6 +115,20 @@
         });
         block.type = "block";
         block.connections = [];
+        block.mouseDownCoordinates = null;
+        block.on('mousedown', function(e) {
+            block.mouseDownCoordinates = [e.e.clientX, e.e.clientY];
+        });
+        block.on('mouseup', function(e) {
+            c = block.mouseDownCoordinates;
+            if(c == null) {
+                return;
+            }
+            if((e.e.clientX - c[0])**2 + (e.e.clientY - c[1])**2 == 0) {
+                openInformation(block);
+            }
+            block.mouseDownCoordinates = null;
+        });
         block.setControlsVisibility({"mtr": false});
         canvas.add(block);
         blocks.push(block);
