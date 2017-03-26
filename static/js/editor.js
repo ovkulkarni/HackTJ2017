@@ -82,13 +82,13 @@ var conditional_types = {
     'if': {
         name: "IF",
         inputs: {
-            'invalue': {
+            'left': {
                 name: "Left Side",
                 type: "text"
             }, 'operation': {
                 name: "Operation",
                 type: "operation"
-            }, 'outvalue': {
+            }, 'right': {
                 name: "Right Side",
                 type: "text"
             }
@@ -116,7 +116,7 @@ var type_lookup = {
 };
 
 var if_operations = [
-    {'in': "contains"}, {'gt': "is greater than"}, {'lt': "is less than"}
+    {'eq': 'equals'}, {'in': "contains"}, {'gt': "is greater than"}, {'lt': "is less than"}
 ];
 
 var colors = {
@@ -182,9 +182,9 @@ function openInformation(block) {
         $(".save-modal").attr("data-id", block.id);
     } else if(block.automate_general_type == "conditional") {
         if (block.automate_type == "if") {
-            $op1 = $bod.append("<div class='operand1 form-group'><select class='form-control'></select></div>").find(".operand1 select");
-            $oper = $bod.append("<div class='operation form-group'><select class='form-control'></select></div>").find(".operation select");
-            $op2 = $bod.append("<div class='operand2 form-group'><select class='form-control'></select></div>").find(".operand2 select");
+            $op1 = $bod.append("<div class='operand1 form-group'><select id='id_left' class='form-control'></select></div>").find(".operand1 select");
+            $oper = $bod.append("<div class='operation form-group'><select id='id_operation' class='form-control'></select></div>").find(".operation select");
+            $op2 = $bod.append("<div class='operand2 form-group'><select id='id_right' class='form-control'></select></div>").find(".operand2 select");
             var append = function(blk) {
                 blk.connectionsFrom.forEach(function(from) {
                     append(from);
@@ -197,9 +197,12 @@ function openInformation(block) {
             });
             if_operations.forEach(function(oper) {
                 Object.keys(oper).forEach(function(op) {
-                    $oper.append("<option value='"+op+"'>"+oper[op]+"</option>");
+                    $oper.append("<option value='" + op + "'>" + oper[op] + "</option>");
                 });
             });
+            $op1.val(block.inputs["left"]);
+            $oper.val(block.inputs["operation"]);
+            $op2.val(block.inputs["right"]);
         }
         else {
             $("#conditional-modal .modal-body").html("");
