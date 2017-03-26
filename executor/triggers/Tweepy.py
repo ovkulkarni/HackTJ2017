@@ -36,11 +36,10 @@ class NewTweet(PassiveTrigger):
             if entry.id == self.last_seen:
                 break
 
-            print(entry)
             self.add_result(True, handle=entry.author, body=entry.text, date=entry.created_at) 
 
         self.last_seen = first_id
 
         await asyncio.sleep(10)
-        self.loop.create_task(run_call())
+        self.loop.create_task(self.run_call())
 

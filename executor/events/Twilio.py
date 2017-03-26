@@ -13,13 +13,13 @@ def get_client():
 class SendSMSEvent(EventBlock):
     _name = "SendSMS"
     _description = "Send SMS"
-    _args = [StringArg("number"), StringArg("message")]
+    _args = [StringArg("phone"), StringArg("message")]
 
-    async def run_call(self, number, message):
+    async def run_call(self, phone, message):
         client = get_client()
 
         try:
-            m = await self.loop.run_in_executor(None, functools.partial(client.messages.create, to=number, from_="+18563912886", body=message))
+            m = await self.loop.run_in_executor(None, functools.partial(client.messages.create, to=phone, from_="+18563912886", body=message))
             return (True, )
         except TwilioRestException as e:
             return (False, str(e))

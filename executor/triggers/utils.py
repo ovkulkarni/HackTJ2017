@@ -52,6 +52,7 @@ def parse_trigger_args(args):
 
 def parse_trigger_results(results):
     l = []
+    print(results)
     p = ast.literal_eval(results)
     for ele in p:
         if ele[1] == 'string':
