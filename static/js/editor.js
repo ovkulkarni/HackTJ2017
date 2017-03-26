@@ -114,9 +114,15 @@ function openInformation(block) {
         $op1 = $bod.append("<div class='operand1'><select></select></div>").find(".operand1 select");
         $oper = $bod.append("<div class='operation'><select></select></div>").find(".operation select");
         $op2 = $bod.append("<div class='operand2'><select></select></div>").find(".operand2 select");
+        var append = function(blk) {
+            blk.connectionsFrom.forEach(function(from) {
+                append(from);
+            });
+            $op1.append(genOptionString(blk, blk.automate_general_type, blk.automate_type));
+            $op2.append(genOptionString(blk, blk.automate_general_type, blk.automate_type));
+        };
         block.connectionsFrom.forEach(function(from) {
-            $op1.append(genOptionString(from, from.automate_general_type, from.automate_type));
-            $op2.append(genOptionString(from, from.automate_general_type, from.automate_type));
+            append(from);
         });
         if_operations.forEach(function(oper) {
             Object.keys(oper).forEach(function(op) {
