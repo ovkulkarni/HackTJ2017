@@ -52,7 +52,7 @@ def save():
             b = Block.create(program=p, block_type="e", event=e)
             db_blocks.append(e)
     for i, val in enumerate(db_blocks[:-1]):
-        l = Link.create(source=val, destination=db_blocks[i+1])
+        l = Link.create(source=db_blocks[i], destination=db_blocks[i+1])
     return jsonify({"success": True})
 
 def formatted_args(block, all_blocks=None):
