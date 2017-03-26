@@ -1,14 +1,27 @@
 import asyncio
+import ast
 
 
 class PassiveTrigger:
     _results = asyncio.Queue()
+    next_ = None
+    block_id = None
 
     def __init__(self):
         self.loop = asyncio.get_event_loop()
 
     def add_result(self, condition, **kwargs):
         self._results.put_nowait((condition, kwargs))
+
+    async def init(self, *args):
+        real_args = []
+        for a in args:
+            real_args.append(a.value)
+
+        await self.run_init(*real_args)
+
+    async def call(self, context):
+        await self.run_call()
 
 class Result:
     pass
@@ -21,6 +34,25 @@ class Arg:
     pass
 
 class StringArg(Arg):
-    def __init__(self, name):
+    def __init__(self, name, value=None):
+        self.value = value
         self.name = name
+
+def parse_trigger_args(args):
+    l = []
+    p = ast.literal_eval(args)
+    for ele in p:
+        if ele[2] == 'string':
+            l.append(StringArg(ele[1], ele[0]))
+
+    return l
+
+def parse_trigger_results(results):
+    l = []
+    p = ast.literal_eval(results)
+    for ele in p:
+        if ele[1] == 'string':
+            l.append(StringArg(ele[0]))
+    
+    return l
 

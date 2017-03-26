@@ -15,7 +15,7 @@ class SendSMSEvent(Event):
     _description = "Send SMS"
     _args = [StringArg("number"), StringArg("message")]
 
-    async def call(self, number, message):
+    async def run_call(self, number, message):
         client = get_client()
 
         try:

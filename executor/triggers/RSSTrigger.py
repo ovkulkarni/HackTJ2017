@@ -19,7 +19,7 @@ class RSSTrigger(PassiveTrigger):
 
         return d
 
-    async def init(self, url):
+    async def run_init(self, url):
         self.url = url
 
         d = await self.get_content()
@@ -27,7 +27,7 @@ class RSSTrigger(PassiveTrigger):
         if len(d.entries) > 0:
             self.stored_id = d.entries[0].id
 
-    async def call(self):
+    async def run_call(self):
         d = await self.get_content()
         first_id = self.stored_id
 
@@ -48,5 +48,5 @@ class RSSTrigger(PassiveTrigger):
         self.stored_id = first_id
 
         await asyncio.sleep(10)
-        self.loop.create_task(self.call())
+        self.loop.create_task(self.run_call())
 
