@@ -121,7 +121,7 @@ var type_lookup = {
 };
 
 var if_operations = [
-    {'eq': 'equals'}, {'in': "contains"}, {'gt': "is greater than"}, {'lt': "is less than"}
+    {'eq': 'equals'}, {'ne': 'not equals'}, {'in': "in"}, {'gt': "is greater than"}, {'lt': "is less than"}
 ];
 
 var colors = {
@@ -435,7 +435,7 @@ function recur_serialize(b) {
     var prev = b;
     while (true) {
         if (next.automate_general_type == "conditional") {
-            out.push({ name: next.name, type: "conditional", inner: recur_serialize(next.connectionsTo[0]), outer: recur_serialize(next.connectionsTo[1]), values: prev.inputs });
+            out.push({ name: next.name, type: "conditional", inner: recur_serialize(next.connectionsTo[0]), outer: recur_serialize(next.connectionsTo[1]), values: next.inputs });
             break;
         }
         prev = next;
