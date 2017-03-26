@@ -1,6 +1,7 @@
 var canvas;
-var blocks = [];
+var blocks = {};
 var blockSize = 100;
+var counter = 0;
 
 var trigger_types = {
     rss: {
@@ -145,8 +146,8 @@ function addBlock(name, type) {
         fontFamily: "sans-serif"
     });
     var block = new fabric.Group([rect, text], {
-        left: $(window).width() / 2 - blockSize / 2 + blocks.length * 6,
-        top: $(window).height() / 2 - blockSize / 2 - $("nav").height() + blocks.length * 6,
+        left: $(window).width() / 2 - blockSize / 2 + Object.keys(blocks).length * 6,
+        top: $(window).height() / 2 - blockSize / 2 - $("nav").height() + Object.keys(blocks).length * 6,
         lockRotation: true,
         lockScalingX: true,
         lockScalingY: true,
@@ -155,7 +156,8 @@ function addBlock(name, type) {
     block.type = "block";
     block.automate_general_type = type;
     block.automate_type = name;
-    block.id = blocks.length;
+    block.id = counter;
+    counter++;
     block.name = name;
     block.inputs = {}
     block.connections = [];
@@ -178,7 +180,7 @@ function addBlock(name, type) {
     });
     block.setControlsVisibility({"mtr": false});
     canvas.add(block);
-    blocks.push(block);
+    blocks[block.id] = block;
     return block;
 }
 
@@ -361,15 +363,15 @@ $(document).ready(function() {
                         });
                     }
                     catch (e) { }
-                    blocks.splice(blocks.indexOf(v), 1);
+                    delete blocks[v.id];
                 }
             });
         }
         else {
             var obj = canvas.getActiveObject();
             canvas.remove(obj);
-            if (obj == "block") {
-                blocks.splice(blocks.indexOf(obj), 1);
+            if (obj.type == "block") {
+                delete blocks[obj.id];
             }
         }
     }
