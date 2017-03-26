@@ -21,16 +21,15 @@
     <script>
     var canvas;
 
-    function addBlock() {
+    function addBlock(name) {
         var rect = new fabric.Rect({
             fill: "#2196F3",
             width: 100,
             height: 100
         });
-        rect.type = "block";
         rect.stroke = "#1565C0";
         rect.strokeWidth = 1;
-        var text = new fabric.Text("hello world", {
+        var text = new fabric.Text(name, {
             left: 50,
             top: 50,
             fontSize: 16,
@@ -40,24 +39,70 @@
             fontFamily: "sans-serif"
         });
         var block = new fabric.Group([rect, text], {
-            left: 25,
-            top: 25,
+            left: $(window).width() / 2 - 50,
+            top: $(window).height() / 2 - 50 - $("nav").height(),
             lockRotation: true,
             lockScalingX: true,
             lockScalingY: true,
             lockUniScaling: true
         });
+        block.type = "block";
+        block.connections = [];
         block.setControlsVisibility({"mtr": false});
         canvas.add(block);
+        return block;
+    }
+
+    function connectBlocks(a, b) {
+        var line = new fabric.Line([0, 0, 1, 1], {
+            stroke: "red",
+            strokeWidth: 2,
+            selectable: false,
+            originX: "left",
+            originY: "top"
+        });
+        line.from = a;
+        line.to = b;
+        a.connections.push(line);
+        b.connections.push(line);
+        canvas.add(line);
     }
 
     $(document).ready(function() {
         canvas = new fabric.Canvas("editor");
         canvas.on("object:moving", function(e) {
+            if (e.target.type == "block") {
+                $.each(e.target.connections, function(k, v) {
+                    v.left = v.from.left + v.from.width / 2;
+                    v.top = v.from.top + v.from.height / 2;
+                    v.width = (v.to.left + v.to.width / 2) - v.left;
+                    if (v.width < 0) {
+                        v.left += v.width;
+                    }
+                    v.set("flipX", v.width < 0);
+                    v.width = Math.abs(v.width);
+                    v.height = (v.to.top + v.to.height / 2) - v.top;
+                    if (v.height < 0) {
+                        v.top += v.height;
+                    }
+                    v.set("flipY", v.height < 0);
+                    v.height = Math.abs(v.height);
+                    console.log(v);
+                });
+            }
         });
         canvas.on("object:removed", function(e) {
+            if (e.target.type == "block") {
+                $.each(e.target.connections, function(k, v) {
+                    canvas.remove(v);
+                    v.from.connections.splice(v.from.connections.indexOf(v), 1);
+                    v.to.connections.splice(v.to.connections.indexOf(v), 1);
+                });
+            }
         });
-        addBlock();
+        var a = addBlock("block 1");
+        var b = addBlock("block 2");
+        connectBlocks(a, b);
         $(window).on("resize", function() {
             var width = window.innerWidth;
             var height = window.innerHeight - $("nav").height();
