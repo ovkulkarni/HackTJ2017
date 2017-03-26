@@ -1,4 +1,5 @@
 from executor.triggers.RSSTrigger import RSSTrigger
+from executor.triggers.Tweepy import NewTweet
 from executor.triggers.utils import parse_trigger_args, parse_trigger_results, Trigger
 from executor.events.Twilio import SendSMSEvent 
 from executor.events.utils import parse_event_args, EventBlock
@@ -11,7 +12,7 @@ import asyncio
 import json
 
 event_map = {'sms': SendSMSEvent}
-trigger_map = {'rss': RSSTrigger}
+trigger_map = {'rss': RSSTrigger, 'twitter': NewTweet}
 
 async def start():
     triggers = parse_triggers()
@@ -49,8 +50,6 @@ async def call_loop(loop, context):
     context['id_{}'.format(loop.block_id)]['variable'] = loop.variable
 
     while (await call_conditional(loop.condition, context)):
-        print(loop.variable)
-        print(context)
         loop.increment()
         context['id_{}'.format(loop.block_id)]['variable'] = loop.variable
 
