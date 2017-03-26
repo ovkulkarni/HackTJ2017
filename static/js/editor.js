@@ -100,17 +100,13 @@ function openInformation(block) {
     });
     if(block.automate_general_type == "trigger"){
         inner_html = "";
-        if(block.automate_type == "rss"){
-            trigger_types.rss.inputs.forEach(function(input){
-                curr_val = "";
-                if(block.inputs[input]) curr_val = block.inputs[input];
-                inner_html += '<div class="form-group"><div class="input-group"><input id="id_' + input + '" name="' + input + '" type="text" class="form-control" placeholder="' + input + '" value="' + curr_val + '" /></div></div>'
-                $(".save-modal").data("id", block.id)
-            });
-            $("#conditional-modal .modal-body").html(inner_html)
-        }
-        else if(block.automate_type == "time"){
-        }
+        trigger_types[block.automate_type].inputs.forEach(function(input){
+            curr_val = "";
+            if(block.inputs[input]) curr_val = block.inputs[input];
+            inner_html += '<div class="form-group"><div class="input-group"><input id="id_' + input + '" name="' + input + '" type="text" class="form-control" placeholder="' + input + '" value="' + curr_val + '" /></div></div>'
+            $(".save-modal").data("id", block.id)
+        });
+        $("#conditional-modal .modal-body").html(inner_html);
     }
     if(block.automate_general_type == "conditational") {
     }
