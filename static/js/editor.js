@@ -106,6 +106,11 @@ var conditional_types = {
             }
         },
         outputs: []
+    },
+    "stop": {
+        name: "STOP",
+        inputs: {},
+        outputs: []
     }
 };
 
