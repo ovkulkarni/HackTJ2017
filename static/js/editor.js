@@ -91,7 +91,7 @@ function openInformation(block) {
     console.log(block.connections);
     block.connections.forEach(function(conn) {
         if(block == conn.from) {
-            $to.append("<div class='option'><p>" + conn.to.name + "</p><select>"
+            $to.append("<div class='option'><p>" + conn.to.name + "</p><select>" +
                 genOptionString(conn.to, 'to', block.automate_general_type) + "</select>"
             );
         } else {
