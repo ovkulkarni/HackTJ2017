@@ -145,7 +145,7 @@ function openInformation(block) {
     });
 };
 
-function addBlock(name, type) {
+function addBlock(name, type, noOffset) {
     var rect = new fabric.Rect({
         fill: colors[type || "none"].fg,
         width: blockSize,
@@ -163,8 +163,8 @@ function addBlock(name, type) {
         fontFamily: "sans-serif"
     });
     var block = new fabric.Group([rect, text], {
-        left: $(window).width() / 2 - blockSize / 2 + Object.keys(blocks).length * 6,
-        top: $(window).height() / 2 - blockSize / 2 - $("nav").height() + Object.keys(blocks).length * 6,
+        left: $(window).width() / 2 - blockSize / 2 + (!noOffset ? Object.keys(blocks).length * 6 : 0),
+        top: $(window).height() / 2 - blockSize / 2 - $("nav").height() + (!noOffset ? Object.keys(blocks).length * 6 : 0),
         lockRotation: true,
         lockScalingX: true,
         lockScalingY: true,
@@ -258,6 +258,69 @@ function serialize() {
         return false;
     }
     return recur_serialize(starting_block);
+}
+
+var offset = blockSize + 25;
+
+function recur_load(p, i, oX, oY) {
+    var SoX = oX;
+    var last = p;
+    $.each(i.outer, function(k, v) {
+        if (v.name) {
+            var b = addBlock(v.name, v.type, true);
+            b.inputs = v.values;
+            b.left += oX * offset;
+            b.top += oY * offset;
+            oX++;
+            connectBlocks(last, b);
+            last = b;
+        }
+        else {
+            recur_load(last, v, oX, oY);
+        }
+    });
+    oY++;
+    SoX--;
+    last = p;
+    $.each(i.inner, function(k, v) {
+        if (v.name) {
+            var b = addBlock(v.name, v.type, true);
+            b.inputs = v.values;
+            b.left += SoX * offset;
+            b.top += oY * offset;
+            oX++;
+            connectBlocks(last, b);
+            last = b;
+        }
+        else {
+            recur_load(last, v, SoX + 1, oY);
+        }
+    });
+}
+
+function load(pgrm) {
+    canvas.clear();
+    blocks = {};
+    var oX = 0;
+    var oY = 0;
+    var last = false;
+    $.each(pgrm, function(k, v) {
+        if (v.name) {
+            var b = addBlock(v.name, v.type, true);
+            b.inputs = v.values;
+            b.left += oX * offset;
+            oX++;
+            if (last) {
+                connectBlocks(last, b);
+            }
+            last = b;
+        }
+        else {
+            recur_load(last, v, oX, oY);
+        }
+    });
+    canvas.renderAll();
+    canvas.calcOffset();
 }
 
 function serialize_and_save() {
@@ -394,6 +457,8 @@ $(document).ready(function() {
                     if (v) {
                         v.from.connections.splice(v.from.connections.indexOf(v), 1);
                         v.to.connections.splice(v.to.connections.indexOf(v), 1);
+                        v.from.connectionsTo.splice(v.from.connectionsTo.indexOf(v), 1);
+                        v.to.connectionsFrom.splice(v.to.connectionsFrom.indexOf(v), 1);
                     }
                 }
             });
@@ -462,6 +527,10 @@ $(document).ready(function() {
     $(window).on("keydown", function(e) {
         if (e.keyCode == 46 || e.keyCode == 8) {
             deleteSelected();
+        }
+        if (e.keyCode == 83 && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            serialize_and_save();
         }
     });
     $(window).resize();
