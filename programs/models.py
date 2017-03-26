@@ -1,5 +1,5 @@
 from db import BaseModel
-from peewee import ForeignKeyField, CharField
+from peewee import ForeignKeyField, CharField, IntegerField
 
 from users.models import User
 
@@ -23,6 +23,7 @@ class Condition(BaseModel):
 class Loop(BaseModel):
     loop_type = CharField()
     condition = ForeignKeyField(Condition)
+    iterations = IntegerField(null=True)
 
 class Block(BaseModel):
     program = ForeignKeyField(Program)
