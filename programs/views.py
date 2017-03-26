@@ -100,7 +100,6 @@ def process_program(prgrm, p, old_blocks=[]):
 
 def process_value(val, all_blocks=[]):
     match = matcher.match(val)
-    print(val, match)
     if match:
         new_val = match.group(1)
         block_type = new_val.split(".")[0]
