@@ -39,3 +39,53 @@
     width: 30px;
     height: 20px;
 }
+body {
+    overflow: hidden;
+    background-color: #434343;
+    background-image:linear-gradient(#434343, #282828);
+}
+#content {
+    background-image: linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent);
+    background-size: 50px 50px;
+}
+#triggers, #events, #conditionals {
+    margin-bottom: 10px;
+}
+#triggers div, #events div, #conditionals div {
+    display: inline-block;
+    width: 75px;
+    height: 75px;
+    padding: 5px;
+    background-color: grey;
+    border: 1px solid #aaa;
+    text-align: center;
+    line-height: 65px;
+    color: black;
+}
+#triggers div {
+    border-color: #D32F2F;
+    background-color: #F44336;
+}
+#events div {
+    background-color: #2196F3;
+    border-color: #1976D2;
+}
+#conditionals div {
+    background-color: #FF9800;
+    border-color: #F57C00;
+}
+.tool .fa {
+    font-size: 24px;
+    color: white;
+    background-color: black;
+    border: 3px solid transparent;
+    padding: 3px;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+}
+.tool.active .fa {
+    color: black;
+    background-color: white;
+    border: 3px solid #666;
+}
