@@ -56,3 +56,8 @@ nav.navbar-dark a.nav-link:hover,
 nav.navbar-dark a.navbar-brand:hover {
     color: #efefef;
 }
+.navbar-toggler-icon:after {
+    font-family: "FontAwesome";
+    font-size: 28px;
+    content: "\f0c9";
+}
