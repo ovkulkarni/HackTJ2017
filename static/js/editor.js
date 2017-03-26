@@ -414,6 +414,19 @@ function load(pgrm) {
 }
 
 function serialize_and_save() {
+    var flag = false;
+    $.each(blocks, function(k, v) {
+        var current = Object.keys(v.inputs).length;
+        var required = Object.keys(type_lookup[v.automate_general_type][v.name].inputs).length;
+        if (current < required) {
+            flag = true;
+            return false;
+        }
+    });
+    if (flag) {
+        Messenger().error("You must enter required parameters for all blocks!");
+        return;
+    }
     var out = serialize();
     if (out) {
         $.post(save_endpoint, { program: JSON.stringify(out) }, function(data) {
