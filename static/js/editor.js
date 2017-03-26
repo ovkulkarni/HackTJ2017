@@ -328,8 +328,10 @@ $(document).ready(function() {
                     canvas.remove(v);
                 }
                 finally {
-                    v.from.connections.splice(v.from.connections.indexOf(v), 1);
-                    v.to.connections.splice(v.to.connections.indexOf(v), 1);
+                    if (v) {
+                        v.from.connections.splice(v.from.connections.indexOf(v), 1);
+                        v.to.connections.splice(v.to.connections.indexOf(v), 1);
+                    }
                 }
             });
             canvas.deactivateAll();
@@ -372,7 +374,7 @@ $(document).ready(function() {
         }
     }
     $(window).on("keydown", function(e) {
-        if (e.keyCode == 46) {
+        if (e.keyCode == 46 || e.keyCode == 8) {
             deleteSelected();
         }
     });
