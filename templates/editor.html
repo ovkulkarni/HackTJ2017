@@ -39,23 +39,32 @@
     var blocks = [];
     var blockSize = 100;
 
+    var colors = {
+        "conditional": { // orange
+            fg: "#FF9800",
+            bg: "#F57C00"
+        },
+        "trigger": { // red
+            fg: "#F44336",
+            bg: "#D32F2F"
+        },
+        "event": { // blue
+            fg: "#2196F3",
+            bg: "#1976D2"
+        },
+        "none": { // green
+            fg: "#4CAF50",
+            bg: "#388E3C"
+        }
+    };
+
     function addBlock(name, type) {
         var rect = new fabric.Rect({
-            fill: (function() {
-                switch(type) {
-                    case 'conditional':
-                        return 'orange';
-                    case 'trigger':
-                        return 'red';
-                    case 'event':
-                        return 'blue';
-                }
-                return 'green';
-            })(),
+            fill: colors[type || "none"].fg,
             width: blockSize,
             height: blockSize
         });
-        rect.stroke = "#1565C0";
+        rect.stroke = colors[type || "none"].bg;
         rect.strokeWidth = 1;
         var text = new fabric.Text(name, {
             left: blockSize / 2,
