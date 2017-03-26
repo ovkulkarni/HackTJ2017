@@ -7,6 +7,7 @@ class Program(BaseModel):
     owner = ForeignKeyField(User)
 
 class Trigger(BaseModel):
+    trigger_type = CharField()
     args = CharField()
     results = CharField()
 
