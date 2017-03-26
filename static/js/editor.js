@@ -163,6 +163,8 @@ function addBlock(name, type) {
     block.name = name;
     block.inputs = {}
     block.connections = [];
+    block.connectionsTo = [];
+    blocks.connectionFrom = [];
     block.mouseDownCoordinates = null;
     block.on('mousedown', function(e) {
         if($("#default.active").length)
@@ -219,6 +221,8 @@ function connectBlocks(a, b) {
     line.triangle = triangle;
     line.from = a;
     line.to = b;
+    a.connectionsTo.push(b);
+    b.connectionsFrom.push(a);
     a.connections.push(line);
     b.connections.push(line);
     recalculateConnection(line);
