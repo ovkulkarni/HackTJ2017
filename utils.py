@@ -20,7 +20,7 @@ def init_database():
     for model in settings.MODELS:
         importlib.import_module(model[0])
         models.append(getattr(sys.modules[model[0]], model[1]))
-    db.create_tables(models)
+    db.create_tables(models, safe=True)
 
 def get_current_user():
     if "uid" in session and session["logged_in"]:
