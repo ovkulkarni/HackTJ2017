@@ -34,15 +34,17 @@ async def call_event(ev, context):
 
 async def call_conditional(cond, context):
     res = cond.evaluate(context)
+    ret = False
     
     if res:
         if cond.next_inner is not None:
             loop.create_task(exec_block(cond.next_inner, context))
-        return True
-    else:
-        if cond.next_outer is not None:
-            loop.create_task(exec_block(cond.next_outer, context))
-        return False
+        ret = True
+
+    if cond.next_outer is not None:
+        loop.create_task(exec_block(cond.next_outer, context))
+
+    return ret
 
 async def call_loop(loop, context):
     loop.reset()
