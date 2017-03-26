@@ -5,7 +5,7 @@ var counter = 0;
 
 var trigger_types = {
     rss: {
-        name: "RSS",
+        name: "RSS Update",
         inputs: {
             'url': {
                 name: "RSS Feed URL",
@@ -17,7 +17,7 @@ var trigger_types = {
         ]
     },
     time: {
-        name: "Time",
+        name: "Time Event",
         inputs: {
             'time': {
                 name: "Trigger Time",
@@ -26,6 +26,18 @@ var trigger_types = {
         },
         outputs: [
             'time'
+        ]
+    },
+    twitter: {
+        name: "New Tweet",
+        inputs: {
+            "handle": {
+                name: "Twitter Handle",
+                type: "text"
+            }
+        },
+        outputs: [
+            "handle", "body", "date"
         ]
     }
 };
@@ -45,6 +57,16 @@ var event_types = {
         },
         outputs: [
         ]
+    },
+    email: {
+        name: "Email",
+        inputs: {
+            'address': {
+                name: "Email Address",
+                type: "email"
+            }
+        },
+        outputs: []
     }
 };
 
@@ -66,6 +88,16 @@ var conditional_types = {
         outputs: [
             'boolean'
         ]
+    },
+    "for": {
+        name: "FOR",
+        inputs: {
+            "iterations": {
+                name: "Iterations",
+                type: "number"
+            }
+        },
+        outputs: []
     }
 };
 
@@ -135,24 +167,36 @@ function openInformation(block) {
         });
         $(".save-modal").attr("data-id", block.id);
     } else if(block.automate_general_type == "conditional") {
-        $op1 = $bod.append("<div class='operand1 form-group'><select class='form-control'></select></div>").find(".operand1 select");
-        $oper = $bod.append("<div class='operation form-group'><select class='form-control'></select></div>").find(".operation select");
-        $op2 = $bod.append("<div class='operand2 form-group'><select class='form-control'></select></div>").find(".operand2 select");
-        var append = function(blk) {
-            blk.connectionsFrom.forEach(function(from) {
+        if (block.automate_type == "if") {
+            $op1 = $bod.append("<div class='operand1 form-group'><select class='form-control'></select></div>").find(".operand1 select");
+            $oper = $bod.append("<div class='operation form-group'><select class='form-control'></select></div>").find(".operation select");
+            $op2 = $bod.append("<div class='operand2 form-group'><select class='form-control'></select></div>").find(".operand2 select");
+            var append = function(blk) {
+                blk.connectionsFrom.forEach(function(from) {
+                    append(from);
+                });
+                $op1.append(genOptionString(blk, blk.automate_general_type, blk.automate_type));
+                $op2.append(genOptionString(blk, blk.automate_general_type, blk.automate_type));
+            };
+            block.connectionsFrom.forEach(function(from) {
                 append(from);
             });
-            $op1.append(genOptionString(blk, blk.automate_general_type, blk.automate_type));
-            $op2.append(genOptionString(blk, blk.automate_general_type, blk.automate_type));
-        };
-        block.connectionsFrom.forEach(function(from) {
-            append(from);
-        });
-        if_operations.forEach(function(oper) {
-            Object.keys(oper).forEach(function(op) {
-                $oper.append("<option value='"+op+"'>"+oper[op]+"</option>");
+            if_operations.forEach(function(oper) {
+                Object.keys(oper).forEach(function(op) {
+                    $oper.append("<option value='"+op+"'>"+oper[op]+"</option>");
+                });
             });
-        });
+        }
+        else {
+            $("#conditional-modal .modal-body").html("");
+            $.each(current_types[block.automate_type].inputs, function(input, details) {
+                curr_val = "";
+                if(block.inputs[input]) curr_val = block.inputs[input];
+                var item = $('<div class="form-group"><div class="input-group"><input id="id_' + input + '" name="' + input + '" type="text" class="form-control" placeholder="' + details.name + '" value="' + curr_val + '" /></div></div>');
+                $("#conditional-modal .modal-body").append(item);
+            });
+            $(".save-modal").attr("data-id", block.id);
+        }
     }
     $("#conditional-modal").modal();
     $("#conditional-modal .save-modal").off("click").click(function(){
